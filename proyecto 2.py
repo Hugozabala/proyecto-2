@@ -1,7 +1,7 @@
 Dic_producto={}
 Dic_empleado={}
 Dic_cliente={}
-Dic_vendedor={}
+Dic_proveedor={}
 Dic_categoria={}
 Dic_compras ={}
 Dic_ventas={}
@@ -51,7 +51,7 @@ class eliminar_categoria:
 
 
 class producto:
-     def __init__(self, Idproducto,nombre,Id_categoria,precio,total_compra=0,total_venta=0,stock=0):
+     def __init__(self, Idproducto,nombre,precio,Id_categoria, total_compra,total_venta,stock):
          self.Idproducto=Idproducto
          self.nombre=nombre
          self.precio=precio
@@ -62,22 +62,37 @@ class producto:
 
 
      def mostrar(self):
-         print(f"\n Id de producto: {self.Idproducto}- Nombre de producto{self.nombre}- Precio: {self.precio}-totalcompra: {self.total_compra}- total_venta: {self.total_venta}- stock: {self.stock} ")
+         print(f"\n Id de producto: {self.Idproducto}- Nombre de producto{self.nombre}- Precio: {self.precio}-Id de categoria :{self.Id_categoria}totalcompra: {self.total_compra}- total_venta: {self.total_venta}- stock: {self.stock} ")
+
 class Ing_producto:
     def Ingreso_producto(self):
         try:
             idpro=int(input("ingrese ID de producto"))
             if idpro not in Dic_producto:
-                print("el producto ya existe en el inventario")
-                return
+                nom = input("ingrese nombre de producto")
+                pre = float(input("ingrese precio de producto"))
+                idc = int(input("Id  categoria de producto "))
+                if idc not in Dic_categoria:
+                    print("ID in categoria no existe agrege primero la categoria")
+                else:
+                    compra = int(input("ingrese la cantidad de producto comprado"))
+                    venta = 0
+                    stock = compra - venta
+                    nuevo_producto = producto(idpro, nom, pre, idc, compra, venta, stock)
+                    Dic_producto[idpro] = nuevo_producto
+            else:
 
-            nom=input("ingrese nombre de producto")
-            pre=float(input("ingrese precio de producto"))
+                print("el producto ya existe en el inventario")
+
+
+
+
+
+
         except ValueError:
             print("has ingresado un doto incorrecto")
 
-        p=producto(idpro,nom,pre)
-        Dic_producto[idpro]=p
+
 class mostrar_producto:
     def pro_mostrar_(self):
         if not Dic_producto:
@@ -245,7 +260,6 @@ class cliente:
 
     def mostrar_cliente(self):
         print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}- Correo: {self.correo}")
-
 class ingresar_cliente:
     def ingresa_cliente(self):
         try:
@@ -307,6 +321,80 @@ class buscar_cliente:
 class Actualizar_pro:
     pass
 
+class proeveedor:
+    def __init__(self,nit,nombre_cliente,direcion,telefono,correo,empresa):
+        self.nit=nit
+        self.nombre_cliente=nombre_cliente
+        self.direccion=direcion
+        self.telefono=telefono
+        self.correo=correo
+        self.empresa=empresa
+
+
+    def mostrar_proeveedor(self):
+        print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}- Correo: {self.correo}- Empresa: {self.empresa}")
+class ingre_proevedor:
+    def ingresa_proeveedor(self):
+        try:
+            nit=int(input("ingrese nit de cliente"))
+            if nit not in Dic_proveedor:
+
+                nom=input("ingrese nombre")
+                dire=input("ingese direccion")
+                tele=int(input("ingrese telefono: "))
+                corr=input("ingrese correo")
+                emp=input("ingrese empresa o marca")
+                vendedor=proeveedor(nit,nom,dire,tele,corr,emp)
+                Dic_empleado[nit]=vendedor
+                print("proveedor ingresdo con Exito")
+            else:
+                print("proveedor ya existe en sistema")
+
+        except ValueError:
+            print("ingrestes un dato no valido")
+
+class mostrar_proveedor:
+    def mostrar_prove(self):
+        if not Dic_proveedor:
+            print("No hay proveedor registrados")
+        else:
+            print("\n proveedor registrados:")
+            for prov in Dic_proveedor.values():
+                prov.mostrar_proveedor()
+
+class eliminar_proveedor:
+    def eliminar_prove(self):
+        try:
+            eliminar=int(input("ingrese nit  de proveedor a eliminar"))
+            if eliminar not in Dic_proveedor:
+                print("el proveedor que desa eliminar no existe")
+                return
+            else:
+                eliminar=Dic_proveedor.pop(eliminar)
+                print(f"proveedor eliminado {eliminar.nombre}")
+
+
+        except ValueError:
+
+            print("has ingresado un dato incorrecto")
+
+class buscar_proveedor:
+    def buscar_prove(self):
+        try:
+
+            nit=int(input("Ingrese nit de proveedor"))
+            if nit not in Dic_proveedor:
+                print(" proveedor no ha sido encontrado")
+                return
+            proveedor=Dic_proveedor[nit]
+            print(f"proveedor encontredo con exito")
+            proveedor.mostrar_proveedor()
+        except ValueError:
+            print("ingrese un dato correcto")
+
+class Actualizar_prov:
+    pass
+
 class menus:
     def Menu_principal(self):
         print("==========MENU PRINCIPAL===========")
@@ -330,14 +418,43 @@ class menus:
         print("5. salir")
 
 
-    def Sun_menu_pro(self):
-        print("=======SUB MENU=======")
+    def menu_producto(self):
+        print("=======MENU PRODUCTO=======")
         print("1. ingreso de producto ")
         print("2. buscar producto ")
         print("3. actualizar producto")
         print("4. ordenar producto")
         print("5. eliminar producto")
         print("6. salir")
+
+    def menu_proveedor(self):
+        print("=======MENU PROVEEDOR=======")
+        print("1. ingreso de proveedor ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+    def menu_empleado(self):
+        print("=======MENU EMPLEADO=======")
+        print("1. ingreso de EMPLEADO ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+    def menu_cliente(self):
+        print("=======MENU CLIENTE=======")
+        print("1. ingreso de cliente ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+
 def main():
     op=0
     menu=menus()
@@ -380,7 +497,41 @@ def main():
                              print("ingrese un numero entero")
 
                 case 2:
-                    pass
+                    p = 0
+                    menu.menu_producto()
+                    ingreso_pro = Ing_producto()
+                    prod_mostrar = mostrar_producto()
+                    prod_eliminar = eliminar_pro()
+                    prod_actualizar = Actualizar_pro()
+                    prod_buscar = buscar_pro()
+
+
+                    while p != 6:
+                        try:
+                            p = int(input("ingrese una opcion a ejecturar"))
+                            match p:
+                                case 1:
+                                     ingreso_pro.Ingreso_producto()
+
+                                case 2:
+                                   pass
+
+                                case 3:
+                                    pass
+
+                                case 4:
+                                     pass
+                                case 5:
+                                    pass
+
+                                case 6:
+                                    print("regresar a menu principal")
+                                case _:
+                                    print("ingrese una opcion valida")
+
+                        except ValueError:
+                             print("ingrese un numero entero")
+
                 case 3:
                     pass
                 case 4:
