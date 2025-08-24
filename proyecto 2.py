@@ -78,6 +78,15 @@ class Ing_producto:
 
         p=producto(idpro,nom,pre)
         Dic_producto[idpro]=p
+class mostrar_producto:
+    def pro_mostrar_(self):
+        if not Dic_producto:
+            print("No hay producto ingresado")
+        else:
+            print("\n productos registrados:")
+            for pro in Dic_producto.values():
+                pro.mostrar_producto()
+
 
 class eliminar_pro:
     def Eliminar_producto(self):
@@ -109,7 +118,7 @@ class Actualizar_pro:
 
             try:
                 nuevo_precio=float(input("ingrese nuevo precio de producto"))
-                nuevo_stock=int(input(" ingrese cantidad de producto nuevo "))
+
                 if nuevo_precio.strip() != "":
                     nuevo_precio = float(nuevo_precio)
                     if nuevo_precio > 0:
@@ -117,12 +126,6 @@ class Actualizar_pro:
                     else:
                         print("Precio inválido, no se actualizó.")
 
-                if nuevo_stock.strip() != "":
-                    nuevo_stock = int(nuevo_stock)
-                    if nuevo_stock >= 0:
-                        producto.stock = nuevo_stock
-                    else:
-                        print("Stock inválido, no se actualizó.")
 
                 print("\nProducto actualizado con éxito:")
                 producto.Mostrar()
@@ -208,6 +211,15 @@ class buscar_empleado:
         except ValueError:
             print("ingrese un dato correcto")
 
+class mostrar_empleado:
+    def mostrar_empleado(self):
+        if not Dic_empleado:
+            print("No hay empleado registrado")
+        else:
+            print("\n empleados registrados:")
+            for emp in Dic_empleado.values():
+                emp.mostrar_empleado()
+
 class eliminar_empleado:
     def Eliminar_empleado(self):
         try:
@@ -223,29 +235,44 @@ class eliminar_empleado:
              print("has ingresado un dato incorrecto")
 
 class cliente:
-    def __init__(self,nit,nombre_cliente,direcion,telefono):
+    def __init__(self,nit,nombre_cliente,direcion,telefono,correo):
         self.nit=nit
         self.nombre_cliente=nombre_cliente
         self.direccion=direcion
         self.telefono=telefono
+        self.correo=correo
 
 
     def mostrar_cliente(self):
-        print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}")
+        print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}- Correo: {self.correo}")
 
 class ingresar_cliente:
     def ingresa_cliente(self):
         try:
             nit=int(input("ingrese nit de cliente"))
-            nom=input("ingrese nombre")
-            dire=input("ingese direccion")
-            tele=int(input("ingrese telefono: "))
-            c=cliente(nit,nom,dire,tele)
-            Dic_empleado[nit]=c
-            print("cliente ingresdo con Exito")
+            if nit not in Dic_cliente:
+
+                nom=input("ingrese nombre")
+                dire=input("ingese direccion")
+                tele=int(input("ingrese telefono: "))
+                corr=input("ingrese correo")
+                clie=cliente(nit,nom,dire,tele,corr)
+                Dic_empleado[nit]=clie
+                print("cliente ingresdo con Exito")
+            else:
+                print("cliente ya existe en sistema")
 
         except ValueError:
             print("ingrestes un dato no valido")
+
+class mostrar_cliente:
+    def mostrar_clie(self):
+        if not Dic_cliente:
+            print("No hay cliente registradas")
+        else:
+            print("\n clientes registrados:")
+            for clie in Dic_categoria.values():
+                clie.mostrar_cliente()
 
 class eliminar_cliente:
     def eliminar_cliente(self):
@@ -284,7 +311,7 @@ class menus:
     def Menu_principal(self):
         print("==========MENU PRINCIPAL===========")
         print("1. Categoria ")
-        print("2. ")
+        print("2. productos")
         print("3. ")
         print("4. ")
         print("5. ")
@@ -326,7 +353,7 @@ def main():
                     menu.Menu_categoria()
                     categoria_ing = ingresar_categoria()
                     cat_eliminar =eliminar_categoria()
-                    c=categoria()
+                    cat_mostrar=mostrar_categoria()
 
                     while p!=6:
                         try:
@@ -339,7 +366,7 @@ def main():
                                       pass
 
                                   case 3:
-                                      c.mostrar_categoria()
+                                      cat_mostrar.mostrar()
                                   case 4:
                                       pass
                                   case 5:
