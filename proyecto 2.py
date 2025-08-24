@@ -3,6 +3,8 @@ Dic_empleado={}
 Dic_cliente={}
 Dic_vendedor={}
 Dic_categoria={}
+Dic_compras ={}
+Dic_ventas={}
 
 class categoria:
     def __init__(self,Id_categoria,nombre):
@@ -10,7 +12,7 @@ class categoria:
         self.nombre=nombre
     def mostrar_categoria(self):
         print(f"\n ID categoria: {self.Id_categoria}- nombre: {self.nombre}")
-class ing_categoria:
+class ingresar_categoria:
     def ing_categoria(self):
         try:
             id=int(input("ingrese Id de categoria"))
@@ -18,11 +20,21 @@ class ing_categoria:
                 nom=input("ingrese nombre de categoria")
                 cate=categoria(id,nom)
                 Dic_categoria[id]=cate
+                print("ingresado con exito")
             else:
                 print("categoria existente")
 
         except ValueError:
             print("ingrese un dato valido")
+
+class mostrar_categoria:
+    def mostrar(self):
+        if not Dic_categoria:
+            print("No hay categorías registradas")
+        else:
+            print("\n Categorías registradas:")
+            for cat in Dic_categoria.values():
+                cat.mostrar_categoria()
 
 class eliminar_categoria:
     def eli_categoria(self):
@@ -36,10 +48,6 @@ class eliminar_categoria:
                 print(f"categoria eliminado{ eliminar.nombre}")
         except ValueError:
             print("ingrese un dato valido")
-
-
-
-
 
 
 class producto:
@@ -272,10 +280,10 @@ class buscar_cliente:
 class Actualizar_pro:
     pass
 
-class menus_producto:
-    def menu_principal(self):
+class menus:
+    def Menu_principal(self):
         print("==========MENU PRINCIPAL===========")
-        print("1. Ingresar Categoria ")
+        print("1. Categoria ")
         print("2. ")
         print("3. ")
         print("4. ")
@@ -286,9 +294,18 @@ class menus_producto:
         print("9. ")
         print("10. ")
 
-    def sun_menu(self):
+    def Menu_categoria(self):
+        print("=======CATEGORIA=======")
+        print("1. ingrese categoria ")
+        print("2. buscar categoria ")
+        print("3. mostrar categoria")
+        print("4. eliminar categoria")
+        print("5. salir")
+
+
+    def Sun_menu_pro(self):
         print("=======SUB MENU=======")
-        print("1. ingreso de prosucto ")
+        print("1. ingreso de producto ")
         print("2. buscar producto ")
         print("3. actualizar producto")
         print("4. ordenar producto")
@@ -296,7 +313,70 @@ class menus_producto:
         print("6. salir")
 def main():
     op=0
-    menus_producto()
+    menu=menus()
+    menu.Menu_principal()
+
+
     while op!=10:
+        try:
+            op=int(input("ingrese una opcion a ejectura"))
+            match op:
+                case 1:
+                    p=0
+                    menu.Menu_categoria()
+                    categoria_ing = ingresar_categoria()
+                    cat_eliminar =eliminar_categoria()
+                    c=categoria()
+
+                    while p!=6:
+                        try:
+                             p=int(input("ingrese una opcion a ejecturar"))
+                             match p:
+                                  case 1:
+                                      categoria_ing.ing_categoria()
+
+                                  case 2:
+                                      pass
+
+                                  case 3:
+                                      c.mostrar_categoria()
+                                  case 4:
+                                      pass
+                                  case 5:
+                                       cat_eliminar.eli_categoria()
+                                  case 6:
+                                      print("regresar a menu principal")
+                                  case _:
+                                      print("ingrese una opcion valida")
+
+                        except ValueError:
+                             print("ingrese un numero entero")
+
+                case 2:
+                    pass
+                case 3:
+                    pass
+                case 4:
+                    pass
+                case 5:
+                    pass
+                case 6:
+                    pass
+                case 7:
+                    pass
+                case 8:
+                    pass
+                case 9:
+                    pass
+                case 10:
+                    pass
+                case _:
+                    print("ingrese una opcion valida")
+
+        except ValueError:
+            print("ingrese un numero entero")
 
 
+
+
+main()
