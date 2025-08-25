@@ -1,3 +1,4 @@
+from zipfile import stringEndArchive64Locator
 Dic_producto={}
 Dic_empleado={}
 Dic_cliente={}
@@ -426,9 +427,35 @@ class ingreso_ventas:
 
         except ValueError:
             print("ingrese un dato valido")
-
 class detalle_ventas:
-    def
+    def __init__(self,idv_detalles,idventas,idproducto,cantidad,subtotal,stock):
+        self.idv_detalles=idv_detalles
+        self.idventas=idventas
+        self.idproducto=idproducto
+        self.cantidad=cantidad
+        self.subtotal=subtotal
+        self.stock=stock
+
+    def mostrar(self):
+        print(f"\n Id detalle deventa: {self.idv_detalles}- Id venta: {self.idventas}- Id producto: {self.idproducto}- Cantidad: {self.cantidad}- subtotal: {self.subtotal}- Stock: {self.stock}")
+
+class deta_ventas:
+    def ventas_detalle(self):
+        import random
+        idv_detalle=random.randint(1 ,1000)
+        try:
+            idventa=int(input("ingrese Id de venta"))
+            if idventa not in Dic_ventas:
+                print("ID no aparece ingrese venta primero")
+            else:
+                Idproducto=int(input("ingrese Id de producto"))
+                cantidad=int(input("ingrese cantidad de producto"))
+                subtotal=cantidad
+                stock1=0
+
+        except ValueError:
+            print("ingrese un dato valido")
+
 
 
 
