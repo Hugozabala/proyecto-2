@@ -86,9 +86,6 @@ class Ing_producto:
 
 
 
-
-
-
         except ValueError:
             print("has ingresado un doto incorrecto")
 
@@ -392,7 +389,7 @@ class buscar_proveedor:
         except ValueError:
             print("ingrese un dato correcto")
 
-class Actualizar_prov:
+class actualizar_prov:
     pass
 
 class menus:
@@ -400,7 +397,7 @@ class menus:
         print("==========MENU PRINCIPAL===========")
         print("1. Categoria ")
         print("2. productos")
-        print("3. ")
+        print("3. proveedor")
         print("4. ")
         print("5. ")
         print("6. ")
@@ -500,10 +497,10 @@ def main():
                     p = 0
                     menu.menu_producto()
                     ingreso_pro = Ing_producto()
-                    prod_mostrar = mostrar_producto()
-                    prod_eliminar = eliminar_pro()
-                    prod_actualizar = Actualizar_pro()
-                    prod_buscar = buscar_pro()
+                    mostrar = mostrar_producto()
+                    eliminar = eliminar_pro()
+                    actualizar = Actualizar_pro()
+                    buscar = buscar_pro()
 
 
                     while p != 6:
@@ -514,15 +511,15 @@ def main():
                                      ingreso_pro.Ingreso_producto()
 
                                 case 2:
-                                   pass
+                                     mostrar.pro_mostrar_()
 
                                 case 3:
-                                    pass
+                                    eliminar.Eliminar_producto()
 
                                 case 4:
-                                     pass
+                                     actualizar.actualizar()
                                 case 5:
-                                    pass
+                                    buscar.buscar_pro()
 
                                 case 6:
                                     print("regresar a menu principal")
@@ -533,7 +530,37 @@ def main():
                              print("ingrese un numero entero")
 
                 case 3:
-                    pass
+                    p = 0
+                    menu.menu_proveedor()
+                    ingresar=ingre_proevedor()
+                    buscar=buscar_proveedor()
+                    mostrar=mostrar_proveedor()
+                    actual=actualizar_prov()
+                    eliminar=eliminar_proveedor()
+
+                    while p != 6:
+                        try:
+                            p = int(input("ingrese una opcion a ejecturar"))
+                            match p:
+                                case 1:
+                                    ingresar.ingresa_proeveedor()
+
+                                case 2:
+                                    buscar.buscar_prove()
+                                case 3:
+                                    mostrar.mostrar_prove()
+                                case 4:
+                                    pass
+                                case 5:
+                                    eliminar.eliminar_prove()
+
+                                case 6:
+                                   print("regresar a menu principal")
+                                case _:
+                                  print("ingrese una opcion valida")
+
+                        except ValueError:
+                             print("ingrese un numero entero")
                 case 4:
                     pass
                 case 5:
