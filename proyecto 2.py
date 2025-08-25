@@ -392,6 +392,46 @@ class buscar_proveedor:
 class actualizar_prov:
     pass
 
+class ventas:
+    def __init__(self,idventas,fecha,idempleado,nit_cliente,total):
+        self.idventa=idventas
+        self.fecha=fecha
+        self.id_empleado=idempleado
+        self.nit_cliente=nit_cliente
+        self.total=total
+
+    def mostrar(self):
+        print(f"\n Id venta: {self.idventa}- fecha de venta: {self.fecha}- Id empleado: {self.id_empleado}- total: {self.total}")
+
+
+class ingreso_ventas:
+    def ingre_venta(self):
+        import random
+        import  datetime
+        idventa= random.randint(1, 1000)
+        fecha = datetime.date.today()
+        try:
+            idempleado=int(input("ingrse ID empleado"))
+            if idempleado not in Dic_empleado:
+                print("empleado no aparece en sistema registra primero a empleado")
+            else:
+                nitcliente=int(input("ingrese nit cliente"))
+                if nitcliente not in Dic_cliente:
+                    print("no aparece cliente en sistema agregue primero a cliente")
+                else:
+                    total=0
+                    venta1=ventas(idventa,fecha,idempleado,nitcliente,total)
+                    Dic_ventas[idventa]=venta1
+                    print("")
+
+        except ValueError:
+            print("ingrese un dato valido")
+
+class detalle_ventas:
+    def
+
+
+
 class menus:
     def Menu_principal(self):
         print("==========MENU PRINCIPAL===========")
@@ -404,7 +444,7 @@ class menus:
         print("7. compras")
         print("8. detalle de compra")
         print("9. ")
-        print("10. ")
+        print("10. salir")
 
     def Menu_categoria(self):
         print("=======CATEGORIA=======")
