@@ -426,7 +426,7 @@ class ingreso_ventas:
                     total=0
                     venta1=ventas(idventa,fecha,idempleado,nitcliente,total)
                     Dic_ventas[idventa]=venta1
-                    print("")
+                    print(" ")
 
         except ValueError:
             print("ingrese un dato valido")
@@ -526,6 +526,9 @@ class ver_detalle_compras:
                 else:
                     subtotal=cantidad
                     fecha=input("ingrese decha de caducidad")
+                    detallec=detalle_compra(Id_det_compra,idventa,cantidad,idproducto,subtotal,fecha)
+                    Dic_detalleventas[Id_det_compra]=detallec
+
 
         except ValueError:
             print("ingrese un dato correcto")
@@ -552,8 +555,9 @@ class menus:
         print("1. ingrese categoria ")
         print("2. buscar categoria ")
         print("3. mostrar categoria")
-        print("4. eliminar categoria")
-        print("5. salir")
+        print("4. ordenar")
+        print("5. eliminar categoria")
+        print("6. salir")
 
 
     def menu_producto(self):
@@ -596,21 +600,21 @@ class menus:
 def main():
     op=0
     menu=menus()
-    menu.Menu_principal()
-
 
     while op!=10:
+        menu.Menu_principal()
         try:
             op=int(input("ingrese una opcion a ejectura"))
             match op:
                 case 1:
                     p=0
-                    menu.Menu_categoria()
+
                     categoria_ing = ingresar_categoria()
                     cat_eliminar =eliminar_categoria()
                     cat_mostrar=mostrar_categoria()
 
                     while p!=6:
+                        menu.Menu_categoria()
                         try:
                              p=int(input("ingrese una opcion a ejecturar"))
                              match p:
@@ -636,7 +640,7 @@ def main():
 
                 case 2:
                     p = 0
-                    menu.menu_producto()
+
                     ingreso_pro = Ing_producto()
                     mostrar = mostrar_producto()
                     eliminar = eliminar_pro()
@@ -645,6 +649,7 @@ def main():
 
 
                     while p != 6:
+                        menu.menu_producto()
                         try:
                             p = int(input("ingrese una opcion a ejecturar"))
                             match p:
@@ -672,7 +677,7 @@ def main():
 
                 case 3:
                     p = 0
-                    menu.menu_proveedor()
+
                     ingresar=ingre_proevedor()
                     buscar=buscar_proveedor()
                     mostrar=mostrar_proveedor()
@@ -680,6 +685,7 @@ def main():
                     eliminar=eliminar_proveedor()
 
                     while p != 6:
+                        menu.menu_proveedor()
                         try:
                             p = int(input("ingrese una opcion a ejecturar"))
                             match p:
@@ -703,9 +709,40 @@ def main():
                         except ValueError:
                              print("ingrese un numero entero")
                 case 4:
-                    pass
+                    p=0
+
+                    ingresar=ingresar_cliente()
+                    buscar=buscar_cliente()
+                    mostrar=mostrar_cliente()
+                    eliminar=eliminar_cliente()
+                    while p != 6:
+                        menu.menu_cliente()
+                        try:
+                            p = int(input("ingrese una opcion a ejecturar"))
+                            match p:
+                                case 1:
+                                    ingresar.ingresa_cliente()
+
+                                case 2:
+                                    buscar.buscar_cliente()
+                                case 3:
+                                    mostrar.mostrar_clie()
+                                case 4:
+                                    pass
+                                case 5:
+                                    eliminar.eliminar_cliente()
+
+                                case 6:
+                                   print("regresar a menu principal")
+                                case _:
+                                  print("ingrese una opcion valida")
+
+                        except ValueError:
+                             print("ingrese un numero entero")
+
                 case 5:
-                    pass
+                    venta=ingreso_ventas()
+                    venta.ingre_venta()
                 case 6:
                     pass
                 case 7:
