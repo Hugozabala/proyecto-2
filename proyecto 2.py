@@ -6,6 +6,9 @@ Dic_proveedor={}
 Dic_categoria={}
 Dic_compras ={}
 Dic_ventas={}
+Dic_detalleventas={}
+Dic_detallecompra={}
+
 
 class categoria:
     def __init__(self,Id_categoria,nombre):
@@ -452,11 +455,46 @@ class deta_ventas:
                 cantidad=int(input("ingrese cantidad de producto"))
                 subtotal=cantidad
                 stock1=0
+                vetna=detalle_ventas(idv_detalle,idventa,Idproducto,cantidad,subtotal,stock1)
+                Dic_detalleventas[idventa]=vetna
+
 
         except ValueError:
             print("ingrese un dato valido")
 
+class compra:
+    def __init__(self,idcompra,fecha_ingreso,id_empleado,nit_vededor,total):
+        self.idcompra=idcompra
+        self.fecha_ingreso=fecha_ingreso
+        self.id_empleado=id_empleado
+        self.nit_vendedor=nit_vededor
+        self.total=total
 
+    def mostrar_compra(self):
+        print(f"\n Id compra: {self.idcompra}- Fecha de ingreso: {self.fecha_ingreso}- Id empleado: {self.id_empleado}- Nit vendedor: {self.nit_vendedor}- Total de compra:{self.total}")
+
+class compra_ingreso:
+    def compra(self):
+        import random
+        import datetime
+        idcompra=random.randint(1,1000)
+        fecha_ingresso=datetime.date.today()
+        try:
+            id_emp=int(input("ingrese Id de empleado"))
+            if id_emp not in Dic_empleado:
+                print("empleado no aparece en sistema necesitas registrar antes")
+
+            else:
+                nit_vendendor=int(input("Ingrese nit de proveedor "))
+                if nit_vendendor not in Dic_proveedor:
+                    print("no existe proveedor en sistema registre primero ")
+                else:
+                    total=0
+        except ValueError:
+            print("ingrse  una opcion valida")
+
+class detalle_compra:
+    def __init__(self,):
 
 
 class menus:
