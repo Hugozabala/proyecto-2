@@ -490,11 +490,47 @@ class compra_ingreso:
                     print("no existe proveedor en sistema registre primero ")
                 else:
                     total=0
+                    compra1=compra(idcompra,fecha_ingresso,id_emp,nit_vendendor,total)
+                    Dic_compras[idcompra]=compra1
+
         except ValueError:
             print("ingrse  una opcion valida")
 
 class detalle_compra:
-    def __init__(self,):
+    def __init__(self,id_det_compra,id_venta,cantidad,idproducto,subtotal,fecha_caducidad):
+        self.id_det_compra=id_det_compra
+        self.id_venta=id_venta
+        self.cantidad=cantidad
+        self.idproducto=idproducto
+        self.subtotal=subtotal
+        self.fecha_caducidad=fecha_caducidad
+
+    def mostar_det_compra(self):
+        print(f"\n Id de compra {self.id_det_compra}- Id venta: {self.id_venta}- Cantidad: {self.cantidad}- Id producto: {self.idproducto}- Subtotal: {self.subtotal}- Fecha de Caducidad: {self.fecha_caducidad}  ")
+
+class ver_detalle_compras:
+    def ver_compra_detallle(self):
+        import random
+        Id_det_compra=random.randint (1,1000)
+        try:
+            idventa=int(input("ingrese Id de venta "))
+            if idventa not in Dic_ventas:
+                print("no aparece registrado el Id de venta verifique la informacion")
+
+            else:
+                cantidad=int(input("ingrese cantidad de producto "))
+                idproducto=int(input("ingrese Id de producto"))
+                if idproducto not in Dic_producto:
+                    print("Producto no esta en inventario")
+
+                else:
+                    subtotal=cantidad
+                    fecha=input("ingrese decha de caducidad")
+
+        except ValueError:
+            print("ingrese un dato correcto")
+
+
 
 
 class menus:
