@@ -1,185 +1,157 @@
-from zipfile import stringEndArchive64Locator
-Dic_producto={}
 Dic_empleado={}
 Dic_cliente={}
 Dic_proveedor={}
-Dic_categoria={}
 Dic_compras ={}
 Dic_ventas={}
 Dic_detalleventas={}
 Dic_detallecompra={}
+class Categoriaprincipal:
+    def __init__(self):
+        self.Dic_categoria = {}
+        self.cargar_categoria()
 
+    def cargar_categoria(self):
 
-class categoria:
-    def __init__(self,Id_categoria,nombre):
-        self.Id_categoria=Id_categoria
-        self.nombre=nombre
-    def mostrar_categoria(self):
-        print(f"\n ID categoria: {self.Id_categoria}- nombre: {self.nombre}")
-class ingresar_categoria:
-    def ing_categoria(self):
         try:
-            id=int(input("ingrese Id de categoria"))
-            if id not in Dic_categoria:
-                nom=input("ingrese nombre de categoria")
-                cate=categoria(id,nom)
-                Dic_categoria[id]=cate
-                print("ingresado con exito")
-            else:
-                print("categoria existente")
+            with open("categoria.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        Id_categoria, nombre = linea.split(":")
+                        self.Dic_categoria[int(Id_categoria)] = {"Nombre": nombre}
+            print("Categorías importadas desde categoria.txt")
+        except FileNotFoundError:
+            print("No existe el archivo categoria.txt, se creará uno nuevo al guardar.")
+class Categoria_guardar:
+    def guardar_categoria(self):
 
-        except ValueError:
-            print("ingrese un dato valido")
+        with open("categoria.txt", "w", encoding="utf-8") as archivo:
+            for Id_categoria, datos in self.Dic_categoria.items():
+                archivo.write(f"{Id_categoria}:{datos['Nombre']}\n")
 
-class mostrar_categoria:
-    def mostrar(self):
-        if not Dic_categoria:
-            print("No hay categorías registradas")
+class Categoria_agregar:
+
+    def agregar_categoria(self, Id_cate, nombre):
+
+        if Id_cate in self.Dic_categoria:
+            print("La categoría ya existe.")
         else:
-            print("\n Categorías registradas:")
-            for cat in Dic_categoria.values():
-                cat.mostrar_categoria()
+            self.Dic_categoria[Id_cate] = {"Nombre": nombre}
+            self.guardar_categoria()
+            print(f"Categoría ID {Id_cate} agregada y guardada correctamente.")
 
-class eliminar_categoria:
-    def eli_categoria(self):
+class Catedoria_mostrar:
+    def mostrar_categorias(self):
+
+        if not self.Dic_categoria:
+            print("No hay categorías registradas.")
+        else:
+            print("\nCategorías registradas:")
+            for Id_categoria, datos in self.Dic_categoria.items():
+                print(f"ID: {Id_categoria} - Nombre: {datos['Nombre']}")
+
+class Categoria_eliminar:
+    def eliminar_categoria(self, Id_cate):
+
+        if Id_cate in self.Dic_categoria:
+            eliminado = self.Dic_categoria.pop(Id_cate)
+            self.guardar_categoria()
+            print(f"Categoría eliminada: {eliminado['Nombre']}")
+        else:
+            print("La categoría no existe.")
+class Producto:
+    def __init__(self):
+        self.Dic_producto = {}
+        self.cargar_producto()
+
+    def cargar_producto(self):
+
         try:
-            eliminar=int(input("ingrese Id de categoria a eliminar"))
-            if eliminar not in Dic_categoria:
-                print("categoria no aparece en sistema")
+            with open("producto.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        Id_producto, nombre, id_categoria, total_compra, total_venta, stock = linea.split(":")
+                        self.Dic_producto[int(Id_producto)] = {
+                            "Nombre": nombre,
+                            "Id_categoria": int(id_categoria),
+                            "Total_compra": int(total_compra),
+                            "Total_venta": int(total_venta),
+                            "Stock": int(stock)
+                        }
+            print("Productos cargados desde producto.txt")
+        except FileNotFoundError:
+            print(" No existe producto.txt, se creará al guardar.")
 
-            else:
-                eliminar=Dic_categoria.pop(eliminar)
-                print(f"categoria eliminado{ eliminar.nombre}")
-        except ValueError:
-            print("ingrese un dato valido")
+    def guardar_producto(self):
 
-
-class producto:
-     def __init__(self, Idproducto,nombre,precio,Id_categoria, total_compra,total_venta,stock):
-         self.Idproducto=Idproducto
-         self.nombre=nombre
-         self.precio=precio
-         self.Id_categoria=Id_categoria
-         self.total_compra=total_compra
-         self.total_venta=total_venta
-         self.stock=stock
-
-
-     def mostrar(self):
-         print(f"\n Id de producto: {self.Idproducto}- Nombre de producto{self.nombre}- Precio: {self.precio}-Id de categoria :{self.Id_categoria}totalcompra: {self.total_compra}- total_venta: {self.total_venta}- stock: {self.stock} ")
+        with open("producto.txt", "w", encoding="utf-8") as archivo:
+            for Id_producto, datos in self.Dic_producto.items():
+                archivo.write(
+                    f"{Id_producto}:{datos['Nombre']}:{datos['Id_categoria']}:"
+                    f"{datos['Total_compra']}:{datos['Total_venta']}:{datos['Stock']}\n"
+                )
 
 class Ing_producto:
-    def Ingreso_producto(self):
-        try:
-            idpro=int(input("ingrese ID de producto"))
-            if idpro not in Dic_producto:
-                nom = input("ingrese nombre de producto")
-                pre = float(input("ingrese precio de producto"))
-                idc = int(input("Id  categoria de producto "))
-                if idc not in Dic_categoria:
-                    print("ID in categoria no existe agrege primero la categoria")
-                else:
-                    compra = int(input("ingrese la cantidad de producto comprado"))
-                    venta = 0
-                    stock = compra - venta
-                    nuevo_producto = producto(idpro, nom, pre, idc, compra, venta, stock)
-                    Dic_producto[idpro] = nuevo_producto
-            else:
+    def __init__(self, producto_manager):
+        self.producto_manager = producto_manager
 
-                print("el producto ya existe en el inventario")
-
-
-
-        except ValueError:
-            print("has ingresado un doto incorrecto")
-
-
-class mostrar_producto:
-    def pro_mostrar_(self):
-        if not Dic_producto:
-            print("No hay producto ingresado")
+    def ingreso_producto(self, Id_producto, nombre, id_categoria, total_compra, total_venta, stock):
+        if Id_producto in self.producto_manager.Dic_producto:
+            print(" El producto ya existe.")
         else:
-            print("\n productos registrados:")
-            for pro in Dic_producto.values():
-                pro.mostrar_producto()
+            self.producto_manager.Dic_producto[Id_producto] = {
+                "Nombre": nombre,
+                "Id_categoria": id_categoria,
+                "Total_compra": total_compra,
+                "Total_venta": total_venta,
+                "Stock": stock
+            }
+            self.producto_manager.guardar_producto()
+            print(f" Producto ID {Id_producto} agregado y guardado.")
+
+class Mostrar_producto:
+    def __init__(self, producto_manager):
+        self.producto_manager = producto_manager
+
+    def mostrar_todos(self):
+        if not self.producto_manager.Dic_producto:
+            print(" No hay productos registrados.")
+        else:
+            print("\n Productos registrados:")
+            for Id_producto, datos in self.producto_manager.Dic_producto.items():
+                print(
+                    f"ID: {Id_producto} | Nombre: {datos['Nombre']} | "
+                    f"Categoría: {datos['Id_categoria']} | Total Compra: {datos['Total_compra']} | "
+                    f"Total Venta: {datos['Total_venta']} | Stock: {datos['Stock']}"
+                )
+class Eliminar_producto:
+    def __init__(self, producto_manager):
+        self.producto_manager = producto_manager
+
+    def eliminar(self, Id_producto):
+        if Id_producto in self.producto_manager.Dic_producto:
+            eliminado = self.producto_manager.Dic_producto.pop(Id_producto)
+            self.producto_manager.guardar_producto()
+            print(f" Producto eliminado: {eliminado['Nombre']}")
+        else:
+            print(" El producto no existe.")
 
 
-class eliminar_pro:
-    def Eliminar_producto(self):
-        try:
-            eliminar=int(input("ingrese ID de producto a eliminar"))
-            if eliminar not in Dic_producto:
-                print("el producto que desea eliminar no existe en el inventario")
-                return
-            else:
-                eliminar=Dic_producto.pop(eliminar)
-                print(f"producto eliminado {eliminar.nombre}")
+class Buscar_producto:
+    def __init__(self, producto_manager):
+        self.producto_manager = producto_manager
 
-
-        except ValueError:
-
-            print("has ingresado un dato incorrecto")
-
-class Actualizar_pro:
-    def actualizar(self):
-        try:
-            id=int(input("ingrese el codigo del producto"))
-            if id not in Dic_producto:
-                print("producto a actualizar no existe")
-                return
-
-            producto = Dic_producto[id]
-            print("mostrar producto a actualizar")
-            producto.mostrar()
-
-            try:
-                nuevo_precio=float(input("ingrese nuevo precio de producto"))
-
-                if nuevo_precio.strip() != "":
-                    nuevo_precio = float(nuevo_precio)
-                    if nuevo_precio > 0:
-                        producto.precio = nuevo_precio
-                    else:
-                        print("Precio inválido, no se actualizó.")
-
-
-                print("\nProducto actualizado con éxito:")
-                producto.Mostrar()
-
-            except ValueError:
-                print("has ingresado un dato no valido")
-
-        except ValueError:
-            print("has ingresado un dato incorrecto")
-
-
-class buscar_pro:
-    def buscar_pro(self):
-        try:
-            id=int(input("ingrese ID de producto"))
-            if id not in Dic_producto:
-                print("no existe producto en inventario ")
-                return
-            producto=Dic_producto[id]
-            print("producto encontrado ")
-            producto.mostrar()
-
-
-        except   ValueError:
-            print("has ingresado un dato no valido")
-
-class ordenar_pro:
-
-        def quicksort(self, lista):
-            if len(lista) <= 1:
-                return lista
-            pivote = lista[0]
-
-            menores = [x for x in lista[1:] if x < pivote]
-            iguales = [x for x in lista if x == pivote]
-            mayores = [x for x in lista[1:] if x > pivote]
-
-            return self.quicksort(menores) + iguales + self.quicksort(mayores)
+    def buscar(self, Id_producto):
+        if Id_producto in self.producto_manager.Dic_producto:
+            datos = self.producto_manager.Dic_producto[Id_producto]
+            print(
+                f"ID: {Id_producto} | Nombre: {datos['Nombre']} | "
+                f"Categoría: {datos['Id_categoria']} | Total Compra: {datos['Total_compra']} | "
+                f"Total Venta: {datos['Total_venta']} | Stock: {datos['Stock']}"
+            )
+        else:
+            print(" El producto no existe.")
 
 class empleado:
     def __init__(self,carnet,nombre_empleado,edad,direcion,telefono,correo,):
@@ -603,33 +575,44 @@ def main():
 
     while op!=10:
         menu.Menu_principal()
+
         try:
             op=int(input("ingrese una opcion a ejectura"))
             match op:
                 case 1:
                     p=0
 
-                    categoria_ing = ingresar_categoria()
-                    cat_eliminar =eliminar_categoria()
-                    cat_mostrar=mostrar_categoria()
-
                     while p!=6:
                         menu.Menu_categoria()
+                        categoria = Categoriaprincipal()
+                        agregar =Categoria_agregar()
+                        guardar=Categoria_guardar()
                         try:
                              p=int(input("ingrese una opcion a ejecturar"))
                              match p:
                                   case 1:
-                                      categoria_ing.ing_categoria()
+                                      categoria.cargar_categoria()
+                                      try:
+                                         id_cat = int(input("Ingrese ID de categoría: "))
+                                         nombre = input("Ingrese nombre de categoría: ")
+                                         agregar.agregar_categoria(id_cat, nombre)
+
+                                      except ValueError:
+                                          print("Ingrese un ID válido.")
+                                          guardar.guardar_categoria()
+                                          print("guardado con exito")
 
                                   case 2:
                                       pass
 
                                   case 3:
-                                      cat_mostrar.mostrar()
+                                      pass
+
                                   case 4:
                                       pass
                                   case 5:
-                                       cat_eliminar.eli_categoria()
+                                      pass
+
                                   case 6:
                                       print("regresar a menu principal")
                                   case _:
@@ -640,32 +623,45 @@ def main():
 
                 case 2:
                     p = 0
-
-                    ingreso_pro = Ing_producto()
-                    mostrar = mostrar_producto()
-                    eliminar = eliminar_pro()
-                    actualizar = Actualizar_pro()
-                    buscar = buscar_pro()
-
+                    productos = Producto()
+                    ingreso = Ing_producto(productos)
+                    mostrar = Mostrar_producto(productos)
+                    eliminar = Eliminar_producto(productos)
+                    buscar = Buscar_producto(productos)
 
                     while p != 6:
                         menu.menu_producto()
                         try:
+
                             p = int(input("ingrese una opcion a ejecturar"))
                             match p:
                                 case 1:
-                                     ingreso_pro.Ingreso_producto()
+                                    productos.cargar_producto()
+                                    try:
+                                        id_producto = int(input("Ingrese ID de producto: "))
+                                        nombre = input("Ingrese nombre de producto: ")
+                                        id_categoria=int(input("ingrese Id de catedoria"))
+                                        if id_categoria not in Dic_categoria.values:
+
+                                        agregar.agregar_categoria(id_producto, nombre,id_categoria,)
+
+                                    except ValueError:
+                                        print("Ingrese un ID válido.")
+                                        guardar.guardar_categoria()
+                                        print("guardado con exito")
+
+                                    ingreso.ingreso_producto()
 
                                 case 2:
-                                     mostrar.pro_mostrar_()
+                                     mostrar.mostrar_todos()
 
                                 case 3:
-                                    eliminar.Eliminar_producto()
+                                    eliminar.eliminar()
 
                                 case 4:
-                                     actualizar.actualizar()
+                                    pass
                                 case 5:
-                                    buscar.buscar_pro()
+                                    buscar.buscar()
 
                                 case 6:
                                     print("regresar a menu principal")
@@ -758,8 +754,5 @@ def main():
 
         except ValueError:
             print("ingrese un numero entero")
-
-
-
 
 main()
