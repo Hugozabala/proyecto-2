@@ -258,7 +258,7 @@ class mostrar_cliente:
             print("No hay cliente registradas")
         else:
             print("\n clientes registrados:")
-            for clie in Dic_categoria.values():
+            for clie in categoria.Dic_categoria.values():
                 clie.mostrar_cliente()
 
 class eliminar_cliente:
