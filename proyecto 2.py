@@ -571,6 +571,8 @@ class menus:
 
 def main():
     op=0
+    categoria=Categoriaprincipal()
+
     menu=menus()
 
     while op!=10:
@@ -593,6 +595,7 @@ def main():
                                   case 1:
                                       categoria.cargar_categoria()
                                       try:
+
                                          id_cat = int(input("Ingrese ID de categoría: "))
                                          nombre = input("Ingrese nombre de categoría: ")
                                          agregar.agregar_categoria(id_cat, nombre)
@@ -641,16 +644,16 @@ def main():
                                         id_producto = int(input("Ingrese ID de producto: "))
                                         nombre = input("Ingrese nombre de producto: ")
                                         id_categoria=int(input("ingrese Id de catedoria"))
-                                        if id_categoria not in Dic_categoria.values:
+                                        if id_categoria not in categoria.Dic_categoria.values:
 
-                                        agregar.agregar_categoria(id_producto, nombre,id_categoria,)
+                                            agregar.agregar_categoria(id_producto, nombre,id_categoria,)
 
                                     except ValueError:
                                         print("Ingrese un ID válido.")
                                         guardar.guardar_categoria()
                                         print("guardado con exito")
 
-                                    ingreso.ingreso_producto()
+                                        ingreso.ingreso_producto()
 
                                 case 2:
                                      mostrar.mostrar_todos()
