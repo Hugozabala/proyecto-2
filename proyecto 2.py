@@ -1,6 +1,4 @@
 Dic_empleado={}
-Dic_cliente={}
-Dic_proveedor={}
 Dic_compras ={}
 Dic_ventas={}
 Dic_detalleventas={}
@@ -167,6 +165,106 @@ class Buscar_producto:
         else:
             print(" El producto no existe.")
 
+class proveedor_principal:
+    def __init__(self):
+        self.Dic_proveedor = {}
+        self.cargar_proveedor()
+
+    def cargar_proveedor(self):
+
+        try:
+            with open("proveedor.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        nit, nombre,direccion,telefono,correo,empresa = linea.split(":")
+                        self.Dic_proveedor[int(nit)] = {
+                            "Nombre": nombre,
+                            "direccion": (direccion),
+                            "telefono": int(telefono),
+                            "correo": (correo),
+                            "empresa": (empresa)
+                        }
+            print("proveedor cargados desde proveedor.txt")
+        except FileNotFoundError:
+            print(" No existe proveedor.txt, se creará al guardar.")
+
+    def guardar_proveedor(self):
+
+        with open("proveedor.txt", "w", encoding="utf-8") as archivo:
+            for nit, datos in self.Dic_proveedor.items():
+                archivo.write(
+                    f"{nit}:{datos['Nombre']}:{datos['direccion']}:"
+                    f"{datos['Telefono']}:{datos['correo']}:{datos['empresa']}\n"
+                )
+
+class Ing_proveedor:
+    def __init__(self, proveedor_manager):
+        self.proveedor_manager = proveedor_manager
+
+    def ingrese_proveedor(self, nit, nombre, direccion, telefono, correo, empresa):
+        if nit in self.proveedor_manager.Dic_proveedor:
+            print(" El proveedor  ya existe en sistema.")
+        else:
+            self.proveedor_manager.Dic_proveedor[nit] = {
+                "Nombre": nombre,
+                "direccion": direccion,
+                "telefono": telefono,
+                "correo": correo,
+                "empresa": empresa
+            }
+            self.proveedor_manager.guardar_proveedor()
+            print(f" proveedor Nit {nit} agregado y guardado.")
+
+class Mostrar_proveedor:
+    def __init__(self, proveedor_manager):
+        self.proveedor_manager = proveedor_manager
+
+    def mostrar_todos(self):
+        if not self.proveedor_manager.Dic_proveedor:
+            print(" No hay proveedor registrados.")
+        else:
+            print("\n Proveedor registrados:")
+            for nit, datos in self.proveedor_manager.Dic_proveedor.items():
+                print(
+                    f"ID: {nit} | Nombre: {datos['Nombre']} | "
+                    f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                    f"correo: {datos['correo']} | empresa: {datos['empresa']}"
+                )
+class Eliminar_proveedor:
+    def __init__(self, proveedor_manager):
+        self.proveedor_manager = proveedor_manager
+
+    def eliminar(self, nit):
+        if nit in self.proveedor_manager.Dic_proveedor:
+            eliminado = self.proveedor_manager.Dic_proveedor.pop(nit)
+            self.proveedor_manager.guardar_proveedor()
+            print(f" proveedor eliminado: {eliminado['Nombre']}")
+        else:
+            print(" El proveedor no existe.")
+
+
+class Buscar_preveedor:
+    def __init__(self, proveedor_manager):
+        self.proveedor_manager = proveedor_manager
+
+    def buscar(self, nit):
+        if nit in self.proveedor_manager.Dic_proveedor:
+            datos = self.proveedor_manager.Dic_proveedor[nit]
+            print(
+                f"nit: {nit} | Nombre: {datos['Nombre']} | "
+                f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                f"correo: {datos['correo']} | empresa: {datos['empresa']}"
+            )
+        else:
+            print(" proveedor no existe.")
+
+
+
+
+class empleado_principal:
+    def empleado_p(self,):
+
 class empleado:
     def __init__(self,carnet,nombre_empleado,edad,direcion,telefono,correo,):
         self.carnet=carnet
@@ -236,151 +334,99 @@ class eliminar_empleado:
         except ValueError:
              print("has ingresado un dato incorrecto")
 
-class cliente:
-    def __init__(self,nit,nombre_cliente,direcion,telefono,correo):
-        self.nit=nit
-        self.nombre_cliente=nombre_cliente
-        self.direccion=direcion
-        self.telefono=telefono
-        self.correo=correo
 
+class cliente_principal:
+    def __init__(self):
+        self.Dic_cliente = {}
+        self.cargar_cliente()
 
-    def mostrar_cliente(self):
-        print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}- Correo: {self.correo}")
-class ingresar_cliente:
-    def ingresa_cliente(self):
+    def cargar_cliente(self):
+
         try:
-            nit=int(input("ingrese nit de cliente"))
-            if nit not in Dic_cliente:
+            with open("cliente.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        nit_cliente, nombre,direccion,telefono,correo,= linea.split(":")
+                        self.Dic_cliente[int(nit_cliente)] = {
+                            "Nombre": nombre,
+                            "direccion": (direccion),
+                            "telefono": int(telefono),
+                            "correo": (correo)
+                        }
+            print("cliente cargados desde proveedor.txt")
+        except FileNotFoundError:
+            print(" No existe cliente.txt, se creará al guardar.")
 
-                nom=input("ingrese nombre")
-                dire=input("ingese direccion")
-                tele=int(input("ingrese telefono: "))
-                corr=input("ingrese correo")
-                clie=cliente(nit,nom,dire,tele,corr)
-                Dic_empleado[nit]=clie
-                print("cliente ingresdo con Exito")
-            else:
-                print("cliente ya existe en sistema")
+    def guardar_cliente(self):
 
-        except ValueError:
-            print("ingrestes un dato no valido")
+        with open("cliente.txt", "w", encoding="utf-8") as archivo:
+            for nit_cliente, datos in self.Dic_cliente.items():
+                archivo.write(
+                    f"{nit_cliente}:{datos['Nombre']}:{datos['direccion']}:"
+                    f"{datos['Telefono']}:{datos['correo']}\n"
+                )
 
-class mostrar_cliente:
-    def mostrar_clie(self):
-        if not Dic_cliente:
-            print("No hay cliente registradas")
+class Ing_cliente:
+    def __init__(self, cliente_manager):
+        self.cliente_manager = cliente_manager
+
+    def ingrese_cliente(self, nit_cliente, nombre, direccion, telefono, correo):
+        if nit_cliente in self.cliente_manager.Dic_cliente:
+            print(" cliente ya existe en sistema.")
         else:
-            print("\n clientes registrados:")
-            for clie in categoria.Dic_categoria.values():
-                clie.mostrar_cliente()
+            self.cliente_manager.Dic_cliente[nit_cliente] = {
+                "Nombre": nombre,
+                "direccion": direccion,
+                "telefono": telefono,
+                "correo": correo
+            }
+            self.cliente_manager.guardar_clienter()
+            print(f" Nit cliente  {nit_cliente} agregado y guardado.")
 
-class eliminar_cliente:
-    def eliminar_cliente(self):
-        try:
-            eliminar=int(input("ingrese nit  de cliente a eliminar"))
-            if eliminar not in Dic_producto:
-                print("el cliente que desa eliminar no existe")
-                return
-            else:
-                eliminar=Dic_producto.pop(eliminar)
-                print(f"producto eliminado {eliminar.nombre}")
+class Mostrar_cliente:
+    def __init__(self, cliente_manager):
+        self.cliente_manager = cliente_manager
 
-
-        except ValueError:
-
-            print("has ingresado un dato incorrecto")
-
-class buscar_cliente:
-    def buscar_cliente(self):
-        try:
-
-            nit=int(input("Ingrese nit de cliente"))
-            if nit not in Dic_cliente:
-                print(" cliente no ha sido encontrado")
-                return
-            cliente=Dic_empleado[nit]
-            print(f"cliente encontredo con exito")
-            cliente.mostrar_cliente()
-        except ValueError:
-            print("ingrese un dato correcto")
-
-class Actualizar_pro:
-    pass
-
-class proeveedor:
-    def __init__(self,nit,nombre_cliente,direcion,telefono,correo,empresa):
-        self.nit=nit
-        self.nombre_cliente=nombre_cliente
-        self.direccion=direcion
-        self.telefono=telefono
-        self.correo=correo
-        self.empresa=empresa
-
-
-    def mostrar_proeveedor(self):
-        print(f"\n Numero de nit de cliente:{self.nit}-Nombre de cliente: {self.nombre_cliente,}-- direccion: {self.direccion}-Telefono: {self.telefono}- Correo: {self.correo}- Empresa: {self.empresa}")
-class ingre_proevedor:
-    def ingresa_proeveedor(self):
-        try:
-            nit=int(input("ingrese nit de cliente"))
-            if nit not in Dic_proveedor:
-
-                nom=input("ingrese nombre")
-                dire=input("ingese direccion")
-                tele=int(input("ingrese telefono: "))
-                corr=input("ingrese correo")
-                emp=input("ingrese empresa o marca")
-                vendedor=proeveedor(nit,nom,dire,tele,corr,emp)
-                Dic_empleado[nit]=vendedor
-                print("proveedor ingresdo con Exito")
-            else:
-                print("proveedor ya existe en sistema")
-
-        except ValueError:
-            print("ingrestes un dato no valido")
-
-class mostrar_proveedor:
-    def mostrar_prove(self):
-        if not Dic_proveedor:
-            print("No hay proveedor registrados")
+    def mostrar_todos(self):
+        if not self.cliente_manager.Dic_cliente:
+            print(" No hay cliente registrados.")
         else:
-            print("\n proveedor registrados:")
-            for prov in Dic_proveedor.values():
-                prov.mostrar_proveedor()
+            print("\n cliente registrados:")
+            for nit_cliente, datos in self.cliente_manager.Dic_cliente.items():
+                print(
+                    f"ID: {nit_cliente} | Nombre: {datos['Nombre']} | "
+                    f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                    f"correo: {datos['correo']} "
+                )
+class Eliminar_cliente:
+    def __init__(self, cliente_manager):
+        self.cliente_manager = cliente_manager
 
-class eliminar_proveedor:
-    def eliminar_prove(self):
-        try:
-            eliminar=int(input("ingrese nit  de proveedor a eliminar"))
-            if eliminar not in Dic_proveedor:
-                print("el proveedor que desa eliminar no existe")
-                return
-            else:
-                eliminar=Dic_proveedor.pop(eliminar)
-                print(f"proveedor eliminado {eliminar.nombre}")
+    def eliminar(self, nit_cliente):
+        if nit_cliente in self.cliente_manager.Dic_cliente:
+            eliminado = self.cliente_manager.Dic_cliente.pop(nit_cliente)
+            self.cliente_manager.guardar_cliente()
+            print(f" cliente eliminado: {eliminado['Nombre']}")
+        else:
+            print(" El cliente no existe.")
 
 
-        except ValueError:
+class Buscar_cliente:
+    def __init__(self, cliente_manager):
+        self.cliente_manager = cliente_manager
 
-            print("has ingresado un dato incorrecto")
+    def buscar(self, nit_cliente):
+        if nit_cliente in self.cliente_manager.Dic_cliente:
+            datos = self.cliente_manager.Dic_proveedor[nit_cliente]
+            print(
+                f"nit: {nit_cliente} | Nombre: {datos['Nombre']} | "
+                f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                f"correo: {datos['correo']}"
+            )
+        else:
+            print(" cliente no existe.")
 
-class buscar_proveedor:
-    def buscar_prove(self):
-        try:
-
-            nit=int(input("Ingrese nit de proveedor"))
-            if nit not in Dic_proveedor:
-                print(" proveedor no ha sido encontrado")
-                return
-            proveedor=Dic_proveedor[nit]
-            print(f"proveedor encontredo con exito")
-            proveedor.mostrar_proveedor()
-        except ValueError:
-            print("ingrese un dato correcto")
-
-class actualizar_prov:
-    pass
 
 class ventas:
     def __init__(self,idventas,fecha,idempleado,nit_cliente,total):
@@ -712,29 +758,51 @@ def main():
 
                 case 3:
                     p = 0
-
-                    ingresar=ingre_proevedor()
-                    buscar=buscar_proveedor()
-                    mostrar=mostrar_proveedor()
-                    actual=actualizar_prov()
-                    eliminar=eliminar_proveedor()
-
                     while p != 6:
                         menu.menu_proveedor()
+                        pro = proveedor_principal()
+                        ingreso_prov = Ing_proveedor(pro)
+                        mostrar_prov = Mostrar_proveedor(pro)
+                        eliminar_prov = Eliminar_proveedor(pro)
+                        buscar_prov = Buscar_preveedor(pro)
+
                         try:
                             p = int(input("ingrese una opcion a ejecturar"))
                             match p:
                                 case 1:
-                                    ingresar.ingresa_proeveedor()
+                                     pro.cargar_proveedor()
+                                     try:
+                                         nit = int(input("Ingrese NIT del proveedor: "))
+                                         if nit not in pro.Dic_proveedor:
+                                             nombre = input("Ingrese nombre del proveedor: ")
+                                             direccion = input("Ingrese dirección: ")
+                                             telefono = int(input("Ingrese teléfono: "))
+                                             correo = input("Ingrese correo: ")
+                                             empresa = input("Ingrese empresa: ")
+
+                                             ingreso_prov.ingrese_proveedor(nit, nombre, direccion, telefono, correo,
+                                                                            empresa)
+                                         else:
+                                             print("El proveedor ya existe en el sistema.")
+                                     except ValueError:
+                                         print("Ingrese datos válidos.")
 
                                 case 2:
-                                    buscar.buscar_prove()
+                                     try:
+                                        nit_buscar = int(input("Ingrese NIT del proveedor a buscar: "))
+                                        buscar_prov.buscar(nit_buscar)
+                                     except ValueError:
+                                          print("Ingrese un NIT válido.")
                                 case 3:
-                                    mostrar.mostrar_prove()
+                                     mostrar_prov.mostrar_todos()
                                 case 4:
                                     pass
                                 case 5:
-                                    eliminar.eliminar_prove()
+                                      try:
+                                         nit_del = int(input("Ingrese NIT del proveedor a eliminar: "))
+                                         eliminar_prov.eliminar(nit_del)
+                                      except ValueError:
+                                          print("Ingrese un NIT válido.")
 
                                 case 6:
                                    print("regresar a menu principal")
@@ -745,23 +813,39 @@ def main():
                              print("ingrese un numero entero")
                 case 4:
                     p=0
+                    clie= cliente_principal()
+                    ingreso_clie = Ing_cliente(clie)
+                    mostrar_clie = Mostrar_cliente(clie)
+                    eliminar_clie = Eliminar_cliente(clie)
+                    buscar_clie = Buscar_cliente(clie)
 
-                    ingresar=ingresar_cliente()
-                    buscar=buscar_cliente()
-                    mostrar=mostrar_cliente()
-                    eliminar=eliminar_cliente()
                     while p != 6:
                         menu.menu_cliente()
                         try:
                             p = int(input("ingrese una opcion a ejecturar"))
                             match p:
                                 case 1:
-                                    ingresar.ingresa_cliente()
+                                     clie.cargar_cliente()
+                                     try:
+                                       nit = int(input("Ingrese NIT del cliente: "))
+                                       if nit not in clie.Dic_cliente:
+                                          nombre = input("Ingrese nombre del proveedor: ")
+                                          direccion = input("Ingrese dirección: ")
+                                          telefono = int(input("Ingrese teléfono: "))
+                                          correo = input("Ingrese correo: ")
+                                          ingreso_clie.ingrese_cliente(nit, nombre, direccion, telefono, correo,)
+                                       else:
+                                           print("El cliente ya existe en el sistema.")
+                                     except ValueError:
+                                           print("Ingrese datos válidos.")
+
 
                                 case 2:
-                                    buscar.buscar_cliente()
+                                    try:
+
+
                                 case 3:
-                                    mostrar.mostrar_clie()
+                                    mostrar_clie.mostrar_todos()
                                 case 4:
                                     pass
                                 case 5:
