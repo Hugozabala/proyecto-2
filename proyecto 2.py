@@ -551,7 +551,7 @@ class menus:
         print("1. ingreso de producto ")
         print("2. buscar producto ")
         print("3. actualizar producto")
-        print("4. ordenar producto")
+        print("4. mostrar producto")
         print("5. eliminar producto")
         print("6. salir")
 
@@ -652,10 +652,10 @@ def main():
                     p = 0
                     productos = Producto()
                     ingreso = Ing_producto(productos)
-                    mostrar = Mostrar_producto(productos)
-                    eliminar = Eliminar_producto(productos)
-                    buscar = Buscar_producto(productos)
-
+                    mostrar_p = Mostrar_producto(productos)
+                    eliminar_p = Eliminar_producto(productos)
+                    buscar_p = Buscar_producto(productos)
+                    categoria = Categoriaprincipal()
                     while p != 6:
                         menu.menu_producto()
                         try:
@@ -666,29 +666,41 @@ def main():
                                     productos.cargar_producto()
                                     try:
                                         id_producto = int(input("Ingrese ID de producto: "))
-                                        nombre = input("Ingrese nombre de producto: ")
-                                        id_categoria=int(input("ingrese Id de catedoria"))
-                                        if id_categoria not in categoria.Dic_categoria.values:
+                                        if id_producto not in productos.Dic_producto:
+                                            nombre = input("Ingrese nombre de producto: ")
+                                            id_categoria = int(input("Ingrese Id de categoría: "))
 
-                                            agregar.agregar_categoria(id_producto, nombre,id_categoria,)
+                                            if id_categoria not in categoria.Dic_categoria:
+                                                print(" La categoría no existe, regístrela primero.")
+                                            else:
+                                                total_compra = int(input("Ingrese precio de compra: "))
+                                                total_venta = int(input("Ingrese precio de venta: "))
+                                                stock = int(input("Ingrese stock: "))
 
+                                                ingreso.ingreso_producto( id_producto, nombre, id_categoria,
+                                                total_compra, total_venta, stock)
+                                        else:
+                                            print(" El producto ya existe en el sistema.")
                                     except ValueError:
-                                        print("Ingrese un ID válido.")
-                                        guardar.guardar_categoria()
-                                        print("guardado con exito")
-
-                                        ingreso.ingreso_producto()
+                                        print(" Ingrese datos válidos.")
 
                                 case 2:
-                                     mostrar.mostrar_todos()
-
+                                    try:
+                                       id_buscar = int(input("Ingrese ID de producto a buscar: "))
+                                       buscar_p.buscar(id_buscar)
+                                    except ValueError:
+                                         print(" Ingrese un ID válido.")
                                 case 3:
-                                    eliminar.eliminar()
-
+                                    print("Función actualizar producto pendiente.")
                                 case 4:
-                                    pass
+                                         print( mostrar_p.mostrar_todos())
+
                                 case 5:
-                                    buscar.buscar()
+                                    try:
+                                      id_del = int(input("Ingrese ID de producto a eliminar: "))
+                                      eliminar_p.eliminar(id_del)
+                                    except ValueError:
+                                      print("Ingrese un ID válido.")
 
                                 case 6:
                                     print("regresar a menu principal")
