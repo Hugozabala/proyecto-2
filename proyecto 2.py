@@ -11,7 +11,6 @@ class Categoriaprincipal:
         self.cargar_categoria()
 
     def cargar_categoria(self):
-
         try:
             with open("categoria.txt", "r", encoding="utf-8") as archivo:
                 for linea in archivo:
@@ -22,43 +21,58 @@ class Categoriaprincipal:
             print("Categorías importadas desde categoria.txt")
         except FileNotFoundError:
             print("No existe el archivo categoria.txt, se creará uno nuevo al guardar.")
-class Categoria_guardar:
-    def guardar_categoria(self):
 
+
+class Categoria_guardar:
+    def __init__(self, categoria_manager):
+        self.categoria_manager = categoria_manager
+
+    def guardar_categoria(self):
         with open("categoria.txt", "w", encoding="utf-8") as archivo:
-            for Id_categoria, datos in self.Dic_categoria.items():
+            for Id_categoria, datos in self.categoria_manager.Dic_categoria.items():
                 archivo.write(f"{Id_categoria}:{datos['Nombre']}\n")
 
+
 class Categoria_agregar:
+    def __init__(self, categoria_manager, guardar_manager):
+        self.categoria_manager = categoria_manager
+        self.guardar_manager = guardar_manager
 
     def agregar_categoria(self, Id_cate, nombre):
-
-        if Id_cate in self.Dic_categoria:
+        if Id_cate in self.categoria_manager.Dic_categoria:
             print("La categoría ya existe.")
         else:
-            self.Dic_categoria[Id_cate] = {"Nombre": nombre}
-            self.guardar_categoria()
+            self.categoria_manager.Dic_categoria[Id_cate] = {"Nombre": nombre}
+            self.guardar_manager.guardar_categoria()
             print(f"Categoría ID {Id_cate} agregada y guardada correctamente.")
 
-class Catedoria_mostrar:
-    def mostrar_categorias(self):
 
-        if not self.Dic_categoria:
+class Categoria_mostrar:
+    def __init__(self, categoria_manager):
+        self.categoria_manager = categoria_manager
+
+    def mostrar_categorias(self):
+        if not self.categoria_manager.Dic_categoria:
             print("No hay categorías registradas.")
         else:
             print("\nCategorías registradas:")
-            for Id_categoria, datos in self.Dic_categoria.items():
+            for Id_categoria, datos in self.categoria_manager.Dic_categoria.items():
                 print(f"ID: {Id_categoria} - Nombre: {datos['Nombre']}")
 
-class Categoria_eliminar:
-    def eliminar_categoria(self, Id_cate):
 
-        if Id_cate in self.Dic_categoria:
-            eliminado = self.Dic_categoria.pop(Id_cate)
-            self.guardar_categoria()
+class Categoria_eliminar:
+    def __init__(self, categoria_manager, guardar_manager):
+        self.categoria_manager = categoria_manager
+        self.guardar_manager = guardar_manager
+
+    def eliminar_categoria(self, Id_cate):
+        if Id_cate in self.categoria_manager.Dic_categoria:
+            eliminado = self.categoria_manager.Dic_categoria.pop(Id_cate)
+            self.guardar_manager.guardar_categoria()
             print(f"Categoría eliminada: {eliminado['Nombre']}")
         else:
             print("La categoría no existe.")
+
 class Producto:
     def __init__(self):
         self.Dic_producto = {}
@@ -571,7 +585,7 @@ class menus:
 
 def main():
     op=0
-    categoria=Categoriaprincipal()
+
 
     menu=menus()
 
@@ -587,34 +601,44 @@ def main():
                     while p!=6:
                         menu.Menu_categoria()
                         categoria = Categoriaprincipal()
-                        agregar =Categoria_agregar()
-                        guardar=Categoria_guardar()
+                        guardar = Categoria_guardar(categoria)
+                        agregar = Categoria_agregar(categoria, guardar)
+                        mostrar = Categoria_mostrar(categoria)
+                        eliminar = Categoria_eliminar(categoria, guardar)
                         try:
                              p=int(input("ingrese una opcion a ejecturar"))
                              match p:
                                   case 1:
                                       categoria.cargar_categoria()
                                       try:
-
-                                         id_cat = int(input("Ingrese ID de categoría: "))
-                                         nombre = input("Ingrese nombre de categoría: ")
-                                         agregar.agregar_categoria(id_cat, nombre)
-
+                                          id_cat = int(input("Ingrese ID de categoría: "))
+                                          if id_cat not in categoria.Dic_categoria:
+                                              nombre = input("Ingrese nombre de categoría: ")
+                                              agregar.agregar_categoria(id_cat, nombre)
+                                          else:
+                                              print("La categoría ya existe")
                                       except ValueError:
                                           print("Ingrese un ID válido.")
-                                          guardar.guardar_categoria()
-                                          print("guardado con exito")
 
                                   case 2:
-                                      pass
+                                         id_buscar = int(input("Ingrese ID de categoría a buscar: "))
+                                         if id_buscar in categoria.Dic_categoria:
+                                              print(f"Categoría encontrada: {categoria.Dic_categoria[id_buscar]['Nombre']}")
+                                         else:
+                                             print("Categoría no encontrada.")
+
 
                                   case 3:
-                                      pass
-
+                                      print("categorias ingresadas")
+                                      print(mostrar.mostrar_categorias())
                                   case 4:
                                       pass
                                   case 5:
-                                      pass
+                                      try:
+                                        id_del = int(input("Ingrese ID de categoría a eliminar: "))
+                                        eliminar.eliminar_categoria(id_del)
+                                      except ValueError:
+                                          print("Ingrese un ID válido.")
 
                                   case 6:
                                       print("regresar a menu principal")
