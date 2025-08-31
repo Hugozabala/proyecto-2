@@ -1,6 +1,5 @@
 
 Dic_compras ={}
-Dic_detalleventas={}
 Dic_detallecompra={}
 class Categoriaprincipal:
     def __init__(self):
@@ -351,10 +350,6 @@ class Buscar_cliente:
         else:
             print(" cliente no existe.")
 
-
-
-
-
 class venta_principal:
     def __init__(self):
         self.Dic_venta = {}
@@ -438,7 +433,7 @@ class Buscar_venta:
         self.venta_manager = venta_manager
 
     def buscar(self, id_venta):
-        if id_venta in self.cliente_manager.Dic_cliente:
+        if id_venta in self.venta_manager.Dic_venta:
             datos = self.venta_manager.Dic_venta[id_venta]
             print(
                 f"id venta: {id_venta} | fecha: {datos['fecha']} | "
@@ -447,6 +442,113 @@ class Buscar_venta:
             )
         else:
             print(" venta no existe.")
+
+
+
+
+
+
+
+class detalleventa_principal:
+    def __init__(self):
+        self.Dic_detalleventa = {}
+        self.cargar_detalleventa()
+
+    def cargar_detalleventa(self):
+
+        try:
+            with open("detalleventa.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_detalleventa, idventa,cantidad,id_producto,subtotal,stock,= linea.split(":")
+                        self.Dic_detalleventa[int(id_detalleventa)] = {
+                            "id venta": idventa,
+                            "cantidad": cantidad,
+                            "id producto": id_producto,
+                            "subtotal": int(subtotal),
+                            "stock": int(stock),
+
+                        }
+            print("detalle venta cargada desde detalleventa.txt")
+        except FileNotFoundError:
+            print(" No existe detalleventa.txt, se creará al guardar.")
+
+    def guardar_detalleventa(self):
+
+        with open("detalleventa.txt", "w", encoding="utf-8") as archivo:
+            for id_detalleventa, datos in self.Dic_detalleventa.items():
+                archivo.write(
+                    f"{id_detalleventa}:{datos['idventa']}:{datos['cantidad']}:"
+                    f"{datos['id producto']}:{datos['subtotal']}:{datos['stock']}\n"
+                )
+
+class Ing_detalleventa:
+    def __init__(self, detalleventa_manager):
+        self.detalleventa_manager = detalleventa_manager
+
+    def ingrese_venta(self, id_venta, fecha, id_empleado, nit_cliente,total):
+        if id_venta in self.venta_manager.Dic_venta:
+            print(" cliente ya existe en sistema.")
+        else:
+            self.venta_manager.Dic_venta[id_venta] = {
+                "fecha": fecha,
+                "id empleado": id_empleado,
+                "nit cliente": nit_cliente,
+                "total": total
+            }
+            self.venta_manager.guardar_venta()
+            print(f" Id venta  {id_venta} agregado y guardado.")
+
+class Mostrar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def mostrar_todos(self):
+        if not self.venta_manager.Dic_venta:
+            print(" No hay venta registrada.")
+        else:
+            print("\n venta registrados:")
+            for id_venta, datos in self.venta_manager.Dic_venta.items():
+                print(
+                    f"ID: {id_venta} | fecha: {datos['fecha']} | "
+                    f"id empleado: {datos['id_empleado']} | nit cliente: {datos['nit_cliente']} | "
+                    f"total: {datos['total']} "
+                )
+class Eliminar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def eliminar(self, id_venta):
+        if id_venta in self.venta_manager.Dic_venta:
+            eliminado = self.venta_manager.Dic_venta.pop(id_venta)
+            self.venta_manager.guardar_cliente()
+            print(f" venta eliminado: {eliminado['id_venta']}")
+        else:
+            print(" la venta no existe.")
+
+
+class Buscar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def buscar(self, id_venta):
+        if id_venta in self.venta_manager.Dic_venta:
+            datos = self.venta_manager.Dic_venta[id_venta]
+            print(
+                f"id venta: {id_venta} | fecha: {datos['fecha']} | "
+                f"id empleado: {datos['id_empleado']} | nit cliente: {datos['nit_cliente']} | "
+                f"total: {datos['total']}"
+            )
+        else:
+            print(" venta no existe.")
+
+
+
+
+
+
+
 
 
 
