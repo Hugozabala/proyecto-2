@@ -1,6 +1,5 @@
-Dic_empleado={}
+
 Dic_compras ={}
-Dic_ventas={}
 Dic_detalleventas={}
 Dic_detallecompra={}
 class Categoriaprincipal:
@@ -260,81 +259,6 @@ class Buscar_preveedor:
             print(" proveedor no existe.")
 
 
-
-
-class empleado_principal:
-    def empleado_p(self,):
-
-class empleado:
-    def __init__(self,carnet,nombre_empleado,edad,direcion,telefono,correo,):
-        self.carnet=carnet
-        self.nombre_empleado=nombre_empleado
-        self.edad=edad
-        self.direccion=direcion
-        self.telefono=telefono
-        self.correo=correo
-
-    def mostrar_Empleado(self):
-        print(f"\n Numero de Carnet de trabajo:{self.carnet}-Nombre de empleado: {self.nombre_empleado,}-Edad: {self.edad}- direccion: {self.direccion}-Telefono: {self.telefono}-  Correo: {self.correo}")
-
-class ingresar_empleado:
-    def ingresa_emple(self):
-        try:
-            carnet=int(input("ingrese carnet de empleado"))
-            if carnet not in Dic_empleado:
-                nom=input("ingrese nombre")
-                edad=int(input("ingrese edad"))
-                dire=input("ingese direccion")
-                tele=int(input("ingrese telefono: "))
-                correo=input("ingrese correo")
-                e=empleado(carnet,nom,edad,dire,tele,correo)
-                Dic_empleado[carnet]=e
-                print("empleado ingresdo con Exito")
-
-
-            else:
-                print("empleado ya existe en sistema ")
-
-        except ValueError:
-            print("ingrestes un dato no valido")
-class buscar_empleado:
-    def buscar_empleado(self):
-        try:
-
-            Id=int(input("Ingrese Id de empleado"))
-            if Id not in Dic_empleado:
-                print("el empleado no ha sido encontrado")
-                return
-            empleado=Dic_empleado[Id]
-            print(f"empleado encontredo con exito")
-            empleado.mostrar_Empleado()
-        except ValueError:
-            print("ingrese un dato correcto")
-
-class mostrar_empleado:
-    def mostrar_empleado(self):
-        if not Dic_empleado:
-            print("No hay empleado registrado")
-        else:
-            print("\n empleados registrados:")
-            for emp in Dic_empleado.values():
-                emp.mostrar_empleado()
-
-class eliminar_empleado:
-    def Eliminar_empleado(self):
-        try:
-            eliminar=int(input("ingrese ID de producto a eliminar"))
-            if eliminar not in Dic_empleado:
-                print("el producto que desea eliminar no existe en el inventario")
-                return
-            else:
-                eliminar=Dic_empleado.pop(eliminar)
-                print(f"producto eliminado {eliminar.nombre}")
-
-        except ValueError:
-             print("has ingresado un dato incorrecto")
-
-
 class cliente_principal:
     def __init__(self):
         self.Dic_cliente = {}
@@ -428,40 +352,104 @@ class Buscar_cliente:
             print(" cliente no existe.")
 
 
-class ventas:
-    def __init__(self,idventas,fecha,idempleado,nit_cliente,total):
-        self.idventa=idventas
-        self.fecha=fecha
-        self.id_empleado=idempleado
-        self.nit_cliente=nit_cliente
-        self.total=total
-
-    def mostrar(self):
-        print(f"\n Id venta: {self.idventa}- fecha de venta: {self.fecha}- Id empleado: {self.id_empleado}- total: {self.total}")
 
 
-class ingreso_ventas:
-    def ingre_venta(self):
-        import random
-        import  datetime
-        idventa= random.randint(1, 1000)
-        fecha = datetime.date.today()
+
+class venta_principal:
+    def __init__(self):
+        self.Dic_venta = {}
+        self.cargar_venta()
+
+    def cargar_venta(self):
+
         try:
-            idempleado=int(input("ingrse ID empleado"))
-            if idempleado not in Dic_empleado:
-                print("empleado no aparece en sistema registra primero a empleado")
-            else:
-                nitcliente=int(input("ingrese nit cliente"))
-                if nitcliente not in Dic_cliente:
-                    print("no aparece cliente en sistema agregue primero a cliente")
-                else:
-                    total=0
-                    venta1=ventas(idventa,fecha,idempleado,nitcliente,total)
-                    Dic_ventas[idventa]=venta1
-                    print(" ")
+            with open("venta.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_venta, fecha,id_empleado,nit_cliente,total,= linea.split(":")
+                        self.Dic_venta[int(id_venta)] = {
+                            "id venta": id_venta,
+                            "fecha": fecha,
+                            "Id empleado": int(id_empleado),
+                            "Nit cliente": int(nit_cliente),
+                            "total": int(total)
+                        }
+            print("venta cargada desde venta.txt")
+        except FileNotFoundError:
+            print(" No existe venta.txt, se creará al guardar.")
 
-        except ValueError:
-            print("ingrese un dato valido")
+    def guardar_venta(self):
+
+        with open("venta.txt", "w", encoding="utf-8") as archivo:
+            for id_venta, datos in self.Dic_venta.items():
+                archivo.write(
+                    f"{id_venta}:{datos['fecha']}:{datos['id_empleado']}:"
+                    f"{datos['nit_cliente']}:{datos['total']}\n"
+                )
+
+class Ing_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def ingrese_venta(self, id_venta, fecha, id_empleado, nit_cliente,total):
+        if id_venta in self.venta_manager.Dic_venta:
+            print(" cliente ya existe en sistema.")
+        else:
+            self.venta_manager.Dic_venta[id_venta] = {
+                "fecha": fecha,
+                "id empleado": id_empleado,
+                "nit cliente": nit_cliente,
+                "total": total
+            }
+            self.venta_manager.guardar_venta()
+            print(f" Id venta  {id_venta} agregado y guardado.")
+
+class Mostrar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def mostrar_todos(self):
+        if not self.venta_manager.Dic_venta:
+            print(" No hay venta registrada.")
+        else:
+            print("\n venta registrados:")
+            for id_venta, datos in self.venta_manager.Dic_venta.items():
+                print(
+                    f"ID: {id_venta} | fecha: {datos['fecha']} | "
+                    f"id empleado: {datos['id_empleado']} | nit cliente: {datos['nit_cliente']} | "
+                    f"total: {datos['total']} "
+                )
+class Eliminar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def eliminar(self, id_venta):
+        if id_venta in self.venta_manager.Dic_venta:
+            eliminado = self.venta_manager.Dic_venta.pop(id_venta)
+            self.venta_manager.guardar_cliente()
+            print(f" venta eliminado: {eliminado['id_venta']}")
+        else:
+            print(" la venta no existe.")
+
+
+class Buscar_venta:
+    def __init__(self, venta_manager):
+        self.venta_manager = venta_manager
+
+    def buscar(self, id_venta):
+        if id_venta in self.cliente_manager.Dic_cliente:
+            datos = self.venta_manager.Dic_venta[id_venta]
+            print(
+                f"id venta: {id_venta} | fecha: {datos['fecha']} | "
+                f"id empleado: {datos['id_empleado']} | nit cliente: {datos['nit_cliente']} | "
+                f"total: {datos['total']}"
+            )
+        else:
+            print(" venta no existe.")
+
+
+
 class detalle_ventas:
     def __init__(self,idv_detalles,idventas,idproducto,cantidad,subtotal,stock):
         self.idv_detalles=idv_detalles
@@ -799,8 +787,8 @@ def main():
                                     pass
                                 case 5:
                                       try:
-                                         nit_del = int(input("Ingrese NIT del proveedor a eliminar: "))
-                                         eliminar_prov.eliminar(nit_del)
+                                         nit_pro = int(input("Ingrese NIT del proveedor a eliminar: "))
+                                         eliminar_prov.eliminar(nit_pro)
                                       except ValueError:
                                           print("Ingrese un NIT válido.")
 
@@ -842,6 +830,15 @@ def main():
 
                                 case 2:
                                     try:
+                                        nit=int(input("ingrese nit de cliente a buscar "))
+                                        if nit not in clie.Dic_cliente:
+                                            print("cliente no aparece en sistema ")
+
+                                        else:
+                                            buscar_clie.buscar(nit)
+                                    except ValueError:
+                                        print("Ingrese un NIT válido.")
+
 
 
                                 case 3:
@@ -849,7 +846,16 @@ def main():
                                 case 4:
                                     pass
                                 case 5:
-                                    eliminar.eliminar_cliente()
+                                      try:
+                                          nit = int(input("ingrese nit de cliente a eliminar "))
+                                          if nit not in clie.Dic_cliente:
+                                             print("cliente no aparece en sistema ")
+
+                                          else:
+                                              eliminar_clie.eliminar(nit)
+
+                                      except ValueError:
+                                         print("Ingrese un NIT válido.")
 
                                 case 6:
                                    print("regresar a menu principal")
@@ -860,8 +866,7 @@ def main():
                              print("ingrese un numero entero")
 
                 case 5:
-                    venta=ingreso_ventas()
-                    venta.ingre_venta()
+                    pass
                 case 6:
                     pass
                 case 7:
