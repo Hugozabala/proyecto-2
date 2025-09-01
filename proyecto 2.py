@@ -1,6 +1,4 @@
 
-Dic_compras ={}
-Dic_detallecompra={}
 class Categoriaprincipal:
     def __init__(self):
         self.Dic_categoria = {}
@@ -541,77 +539,290 @@ class Buscar_detalleventa:
             print(" El detalle de venta no existe.")
 
 
-class compra:
-    def __init__(self,idcompra,fecha_ingreso,id_empleado,nit_vededor,total):
-        self.idcompra=idcompra
-        self.fecha_ingreso=fecha_ingreso
-        self.id_empleado=id_empleado
-        self.nit_vendedor=nit_vededor
-        self.total=total
+class Compra_principal:
+    def __init__(self):
+        self.Dic_compra = {}
+        self.cargar_compra()
 
-    def mostrar_compra(self):
-        print(f"\n Id compra: {self.idcompra}- Fecha de ingreso: {self.fecha_ingreso}- Id empleado: {self.id_empleado}- Nit vendedor: {self.nit_vendedor}- Total de compra:{self.total}")
+    def cargar_compra(self):
 
-class compra_ingreso:
-    def compra(self):
-        import random
-        import datetime
-        idcompra=random.randint(1,1000)
-        fecha_ingresso=datetime.date.today()
         try:
-            id_emp=int(input("ingrese Id de empleado"))
-            if id_emp not in Dic_empleado:
-                print("empleado no aparece en sistema necesitas registrar antes")
+            with open("compra.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_compra, fecha_ingreso,id_empleado,nit_proveedor,total,= linea.split(":")
+                        self.Dic_compra[int(id_compra)] = {
+                            "Fecha de ingreso": fecha_ingreso,
+                            "id empleado": id_empleado,
+                            "nit proveedor": nit_proveedor,
+                            "total": int(total),
 
-            else:
-                nit_vendendor=int(input("Ingrese nit de proveedor "))
-                if nit_vendendor not in Dic_proveedor:
-                    print("no existe proveedor en sistema registre primero ")
-                else:
-                    total=0
-                    compra1=compra(idcompra,fecha_ingresso,id_emp,nit_vendendor,total)
-                    Dic_compras[idcompra]=compra1
+                        }
+            print("compra cargada desde compra.txt")
+        except FileNotFoundError:
+            print(" No existe compra.txt, se creará al guardar.")
 
-        except ValueError:
-            print("ingrse  una opcion valida")
+    def guardar_compra(self):
 
-class detalle_compra:
-    def __init__(self,id_det_compra,id_venta,cantidad,idproducto,subtotal,fecha_caducidad):
-        self.id_det_compra=id_det_compra
-        self.id_venta=id_venta
-        self.cantidad=cantidad
-        self.idproducto=idproducto
-        self.subtotal=subtotal
-        self.fecha_caducidad=fecha_caducidad
+        with open("compra.txt", "w", encoding="utf-8") as archivo:
+            for id_compra, datos in self.Dic_compra.items():
+                archivo.write(
+                    f"{id_compra}:{datos['fecha_ingreso']}:{datos['id empleado']}:"
+                    f"{datos['nit']}:{datos['total']}\n"
+                )
 
-    def mostar_det_compra(self):
-        print(f"\n Id de compra {self.id_det_compra}- Id venta: {self.id_venta}- Cantidad: {self.cantidad}- Id producto: {self.idproducto}- Subtotal: {self.subtotal}- Fecha de Caducidad: {self.fecha_caducidad}  ")
+class Ing_compra:
+    def __init__(self, compra_manager):
+        self.compra_manager = compra_manager
 
-class ver_detalle_compras:
-    def ver_compra_detallle(self):
-        import random
-        Id_det_compra=random.randint (1,1000)
+    def ingresar(self, id_compra, fecha_ingreso, id_empleado, nit, total):
+        if id_compra in self.compra_manager.Dic_compra:
+            print("compra ya existe en el sistema.")
+        else:
+            self.compra_manager.Dic_compra[id_compra] = {
+                "fecha de ingreso": fecha_ingreso,
+                "id empleado": id_empleado,
+                "nit proveedor": nit,
+                "total": total,
+            }
+            self.compra_manager.guardar_compra()
+            print(f" compra {id_compra} agregado y guardado.")
+
+
+class Mostrar_compra:
+    def __init__(self, compra_manager):
+        self.compra_manager = compra_manager
+
+    def mostrar_todos(self):
+        if not self.compra_manager.Dic_compra:
+            print(" No hay compra registradas.")
+        else:
+            print("\n compras registrados:")
+            for id_compra, datos in self.compra_manager.Dic_compra.items():
+                print(
+                    f"ID compra: {id_compra} | fecha de ingreso : {datos['fecha_ingreso']} | "
+                    f"id empleado: {datos['id_empleado']} | nit: {datos['nit']} | "
+                    f"total: {datos['total']} ")
+
+class Eliminar_compra:
+    def __init__(self, compra_manager):
+        self.compra_manager = compra_manager
+
+    def eliminar(self, id_compra):
+        if id_compra in self.compra_manager.Dic_compra:
+            eliminado = self.compra_manager.Dic_compra.pop(id_compra)
+            self.compra_manager.guardar_compra()
+            print(f" Detalle de venta eliminado: {id_compra} (Producto {eliminado['id_compra']})")
+        else:
+            print(" compra no existe.")
+
+
+class Buscar_compra:
+    def __init__(self, compra_manager):
+        self.compra_manager = compra_manager
+
+    def buscar(self, id_compra):
+        if id_compra in self.compra_manager.Dic_compra:
+            datos = self.compra_manager.Dic_compra[id_compra]
+            print(
+                f" ID compra: {id_compra} | fecha ingreso: {datos['fecha_ingreso']} | "
+                f"Id empleado: {datos['id_empleado']} | nit: {datos['nit']} | "
+                f"total: {datos['total']} " )
+        else:
+            print(" compra no existe.")
+
+
+class empleado_principal:
+    def __init__(self):
+        self.Dic_empleado = {}
+        self.cargar_empleado()
+
+    def cargar_empleado(self):
+
         try:
-            idventa=int(input("ingrese Id de venta "))
-            if idventa not in Dic_ventas:
-                print("no aparece registrado el Id de venta verifique la informacion")
+            with open("empleado.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        carnet, nombre,direccion,telefono,correo,= linea.split(":")
+                        self.Dic_empleado[int(carnet)] = {
+                            "Nombre": nombre,
+                            "direccion": (direccion),
+                            "telefono": int(telefono),
+                            "correo": (correo)
+                        }
+            print("empleado cargados desde empleado.txt")
+        except FileNotFoundError:
+            print(" No existe empleado.txt, se creará al guardar.")
 
-            else:
-                cantidad=int(input("ingrese cantidad de producto "))
-                idproducto=int(input("ingrese Id de producto"))
-                if idproducto not in Dic_producto:
-                    print("Producto no esta en inventario")
+    def guardar_empleado(self):
 
-                else:
-                    subtotal=cantidad
-                    fecha=input("ingrese decha de caducidad")
-                    detallec=detalle_compra(Id_det_compra,idventa,cantidad,idproducto,subtotal,fecha)
-                    Dic_detalleventas[Id_det_compra]=detallec
+        with open("empleado.txt", "w", encoding="utf-8") as archivo:
+            for carnet, datos in self.Dic_empleado.items():
+                archivo.write(
+                    f"{carnet}:{datos['Nombre']}:{datos['direccion']}:"
+                    f"{datos['Telefono']}:{datos['correo']}\n"
+                )
+
+class Ing_empleado:
+    def __init__(self, empleado_manager):
+        self.empleado_manager = empleado_manager
+
+    def ingrese_empleado(self, carnet, nombre, direccion, telefono, correo):
+        if carnet in self.empleado_manager.Dic_empleado:
+            print(" empleado ya existe en sistema.")
+        else:
+            self.empleado_manager.Dic_empleado[carnet] = {
+                "Nombre": nombre,
+                "direccion": direccion,
+                "telefono": telefono,
+                "correo": correo
+            }
+            self.empleado_manager.guardar_empleado()
+            print(f" carnet empleado  {carnet} agregado y guardado.")
+
+class Mostrar_empleado:
+    def __init__(self, empleado_manager):
+        self.empleado_manager = empleado_manager
+
+    def mostrar_todos(self):
+        if not self.empleado_manager.Dic_empleado:
+            print(" No hay empleado registrados.")
+        else:
+            print("\n empleado registrados:")
+            for carnet, datos in self.empleado_manager.Dic_empleado.items():
+                print(
+                    f"ID: {carnet} | Nombre: {datos['Nombre']} | "
+                    f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                    f"correo: {datos['correo']} "
+                )
+class Eliminar_empleado:
+    def __init__(self, empleado_manager):
+        self.empleado_manager = empleado_manager
+
+    def eliminar(self, carnet):
+        if carnet in self.empleado_manager.Dic_empleado:
+            eliminado = self.empleado_manager.Dic_empleado.pop(carnet)
+            self.empleado_manager.guardar_empleado()
+            print(f" empleado eliminado: {eliminado['Nombre']}")
+        else:
+            print(" empleado no existe.")
 
 
-        except ValueError:
-            print("ingrese un dato correcto")
+class Buscar_empleado:
+    def __init__(self, empleado_manager):
+        self.empleado_manager = empleado_manager
 
+    def buscar(self, carnet):
+        if carnet in self.empleado_manager.Dic_empleado:
+            datos = self.empleado_manager.Dic_empleado[carnet]
+            print(
+                f"nit: {carnet} | Nombre: {datos['Nombre']} | "
+                f"direccion: {datos['direccion']} | telefono: {datos['telefono']} | "
+                f"correo: {datos['correo']}"
+            )
+        else:
+            print(" empleado no existe.")
+
+
+
+
+
+class Compradetalle_principal:
+    def __init__(self):
+        self.Dic_compradetalle = {}
+        self.cargar_compradetalle()
+
+    def cargar_compradetalle(self):
+
+        try:
+            with open("compradetalle.txt", "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea = linea.strip()
+                    if linea:
+                        id_decompra, id_venta,cantidad,id_producto,subtotal,fecha_caducidad,= linea.split(":")
+                        self.Dic_compradetalle[int(id_decompra)] = {
+                            "Id de venta": id_venta,
+                            "cantidad": cantidad,
+                            "id_producto": id_producto,
+                            "subtotal": int(subtotal),
+                            "fecha de caducidad":fecha_caducidad
+
+                        }
+            print("detallecompra cargada desde detallecompra.txt")
+        except FileNotFoundError:
+            print(" No existe detallecompra.txt, se creará al guardar.")
+
+    def guardar_detallecompra(self):
+
+        with open("detallecompra.txt", "w", encoding="utf-8") as archivo:
+            for id_decompra, datos in self.Dic_compradetalle.items():
+                archivo.write(
+                    f"{id_decompra}:{datos['id_venta']}:{datos['cantidad']}:"
+                    f"{datos['id_producto']}:{datos['subtotal']}:{datos['fecha_caducidad']}\n"
+                )
+
+class Ing_detallecompra:
+    def __init__(self, detallecompra_manager):
+        self.detallecompra_manager = detallecompra_manager
+
+    def ingresar(self, id_decompra, idventa, cantidad, idproducto, subtotal,fecha_caducidad):
+        if id_decompra in self.detallecompra_manager.Dic_compradetalle:
+            print("compra ya existe en el sistema.")
+        else:
+            self.detallecompra_manager.Dic_compradetalle[id_decompra] = {
+                "Id de venta": idventa,
+                "cantidad": cantidad,
+                "id_producto": idproducto,
+                "subtotal": int(subtotal),
+                "fecha de caducidad": fecha_caducidad
+            }
+            self.detallecompra_manager.guardar_compradetalle()
+            print(f" compra {id_decompra} agregado y guardado.")
+
+
+class Mostrar_compradetallle:
+    def __init__(self, compradetalle_manager):
+        self.compradetalle_manager = compradetalle_manager
+
+    def mostrar_todos(self):
+        if not self.compradetalle_manager.Dic_compradetalle:
+            print(" No hay compra registradas.")
+        else:
+            print("\n compras registrados:")
+            for id_decompra, datos in self.compradetalle_manager.Dic_compradetalle.items():
+                print(
+                    f"{id_decompra}:{datos['id_venta']}:{datos['cantidad']}:"
+                    f"{datos['id_producto']}:{datos['subtotal']}:{datos['fecha_caducidad']}\n")
+
+class Eliminar_compradetalle:
+    def __init__(self, compradetalle_manager):
+        self.compradetalle_manager = compradetalle_manager
+
+    def eliminar(self, id_decompra):
+        if id_decompra in self.compradetalle_manager.Dic_compradetalle:
+            eliminado = self.compradetalle_manager.Dic_compradetalle.pop(id_decompra)
+            self.compradetalle_manager.guardar_compradetalle()
+            print(f" Detalle de venta eliminado: {id_decompra} (Producto {eliminado['id_decompra']})")
+        else:
+            print(" compra no existe.")
+
+
+class Buscar_compradetalle:
+    def __init__(self, compradetalle_manager):
+        self.compradetalle_manager = compradetalle_manager
+
+    def buscar(self, id_decompra):
+        if id_decompra in self.compradetalle_manager.Dic_compradetalle:
+            datos = self.compradetalle_manager.Dic_compradetalle[id_decompra]
+            print(
+                f"{id_decompra}:{datos['id_venta']}:{datos['cantidad']}:"
+                f"{datos['id_producto']}:{datos['subtotal']}:{datos['fecha_caducidad']}\n")
+
+
+        else:
+            print(" compra no existe.")
 
 
 
@@ -626,7 +837,7 @@ class menus:
         print("6. detalle de ventas")
         print("7. compras")
         print("8. detalle de compra")
-        print("9. ")
+        print("9. empleado")
         print("10. salir")
 
     def Menu_categoria(self):
@@ -676,13 +887,44 @@ class menus:
         print("6. salir")
 
     def menu_venta(self):
-        print("=======MENU venta=======")
+        print("=======MENU VENTAS=======")
         print("1. ingrese venta ")
         print("2. buscar ")
         print("3. mostrar")
         print("4. actualizar")
         print("5. eliminar ")
         print("6. salir")
+
+
+    def menu_detalleventa(self):
+        print("=======MENU DETALLE VENTAS=======")
+        print("1. ingrese venta ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+
+    def menu_compra(self):
+        print("=======MENU COMPRAS=======")
+        print("1. ingrese compra ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+    def menu_detallecompra(self):
+        print("=======MENU  DETALLE COMPRAS=======")
+        print("1. ingrese compra ")
+        print("2. buscar ")
+        print("3. mostrar")
+        print("4. actualizar")
+        print("5. eliminar ")
+        print("6. salir")
+
+
 
 
 def main():
@@ -720,7 +962,7 @@ def main():
                                           else:
                                               print("La categoría ya existe")
                                       except ValueError:
-                                          print("Ingrese un ID válido.")
+                                           print("Ingrese un ID válido.")
 
                                   case 2:
                                          id_buscar = int(input("Ingrese ID de categoría a buscar: "))
@@ -990,15 +1232,200 @@ def main():
                         except ValueError:
                             print("Ingrese un número entero válido.")
                 case 6:
-                    pass
+
+                    p = 0
+                    deventa = detalleventa_principal()
+                    ingreso_deventa = Ing_detalleventa(deventa)
+                    mostrar_deventa = Mostrar_detalleventa(deventa)
+                    eliminar_deventa = Eliminar_detalleventa(deventa)
+                    buscar_deventa = Buscar_detalleventa(deventa)
+
+                    while p != 6:
+                        menu.menu_detalleventa()
+                        try:
+                            p = int(input("Ingrese una opción a ejecutar: "))
+                            match p:
+                                case 1:
+                                    deventa.cargar_detalleventa()
+                                    try:
+                                        id_detalle = int(input("Ingrese ID del detalle de venta: "))
+                                        if id_detalle not in deventa.Dic_detalleventa:
+                                            id_venta = int(input("Ingrese ID de la venta: "))
+                                            id_producto = int(input("Ingrese ID del producto: "))
+                                            cantidad = int(input("Ingrese cantidad: "))
+                                            precio_unitario = float(input("Ingrese precio unitario: "))
+                                            subtotal = cantidad * precio_unitario
+
+                                            ingreso_deventa.ingresar( id_detalle, id_venta, id_producto, cantidad, precio_unitario, subtotal)
+                                        else:
+                                            print(" El detalle de venta ya existe en el sistema.")
+                                    except ValueError:
+                                        print(" Ingrese datos válidos.")
+
+                                case 2:
+                                    try:
+                                        id_buscar = int(input("Ingrese ID de detalle venta a buscar: "))
+                                        buscar_deventa.buscar(id_buscar)
+                                    except ValueError:
+                                        print("Ingrese un ID válido.")
+
+                                case 3:
+                                    mostrar_deventa.mostrar_todos()
+
+                                case 4:
+                                    print("Función actualizar detalle pendiente.")
+
+                                case 5:
+                                    try:
+                                        id_del = int(input("Ingrese ID de detalle venta a eliminar: "))
+                                        eliminar_deventa.eliminar(id_del)
+                                    except ValueError:
+                                        print("Ingrese un ID válido.")
+
+                                case 6:
+                                    print(" Regresando al menú principal...")
+                                case _:
+                                    print(" Ingrese una opción válida.")
+                        except ValueError:
+                            print("Ingrese un número entero válido.")
+
+
                 case 7:
-                    pass
+                    p = 0
+                    import random
+                    compra=Compra_principal ()
+                    ingreso_compra = Ing_compra(compra)
+                    mostrar_compra = Mostrar_compra(compra)
+                    eliminar_compra = Eliminar_compra(compra)
+                    buscar_compra = Buscar_compra(compra)
+                    empleado= empleado_principal()
+                    pro = proveedor_principal()
+
+                    while p != 6:
+                        menu.menu_compra()
+                        try:
+                            p = int(input("Ingrese una opción a ejecutar: "))
+                            match p:
+                                case 1:
+                                    compra.cargar_compra()
+                                    try:
+                                        id_compra = random.randint (1,1000)
+                                        fecha=input("ingrese fecha de ingreso")
+                                        idempleado=int(input("ingrese Id de empleado"))
+                                        if idempleado not in empleado.Dic_empleado:
+                                            print("no tiene registrado empleados registre primero a empleado")
+                                        else:
+                                            nit=int(input("ingrese nit de proveedor"))
+                                            if nit not in pro.Dic_proveedor:
+                                                print("no tines proveedor registrado")
+                                            else:
+                                                total=int(input("ingrse total de compra"))
+                                                print("compra registrado con exito")
+                                                ingreso_compra.ingresar(id_compra, fecha, idempleado,nit, total)
+
+                                    except ValueError:
+                                        print(" Ingrese datos válidos.")
+
+                                case 2:
+                                    try:
+                                        id_buscar = int(input("Ingrese ID de compra a buscar: "))
+                                        buscar_compra.buscar(id_buscar)
+                                    except ValueError:
+                                        print("Ingrese un ID válido.")
+
+                                case 3:
+                                    mostrar_compra.mostrar_todos()
+
+                                case 4:
+                                    print(" Función actualizar compra pendiente.")
+
+                                case 5:
+                                    try:
+                                        id_del = int(input("Ingrese ID de compra a eliminar: "))
+                                        eliminar_compra.eliminar(id_del)
+                                    except ValueError:
+                                        print(" Ingrese un ID válido.")
+
+                                case 6:
+                                    print(" Regresando al menú principal...")
+                                case _:
+                                    print(" Ingrese una opción válida.")
+                        except ValueError:
+                            print("Ingrese un número entero válido.")
+
+
                 case 8:
                     pass
                 case 9:
-                    pass
+
+                    p=0
+                    empleado= empleado_principal()
+                    ingreso_empleado = Ing_empleado(empleado)
+                    mostrar_empleado = Mostrar_empleado(empleado)
+                    eliminar_empleado = Eliminar_empleado(empleado)
+                    buscar_empleado = Buscar_empleado(empleado)
+
+                    while p != 6:
+                        menu.menu_empleado()
+                        try:
+                            p = int(input("ingrese una opcion a ejecturar"))
+                            match p:
+                                case 1:
+                                     empleado.cargar_empleado()
+                                     try:
+                                       carnet = int(input("Ingrese carnet del empleado: "))
+                                       if carnet not in empleado.Dic_empleado:
+                                          nombre = input("Ingrese nombre : ")
+                                          direccion = input("Ingrese dirección: ")
+                                          telefono = int(input("Ingrese teléfono: "))
+                                          correo = input("Ingrese correo: ")
+                                          ingreso_empleado.ingrese_empleado(carnet, nombre, direccion, telefono, correo,)
+                                       else:
+                                           print("El empleado ya existe en el sistema.")
+                                     except ValueError:
+                                           print("Ingrese datos válidos.")
+
+
+                                case 2:
+                                    try:
+                                        carnet=int(input("ingrese carnet  a buscar "))
+                                        if carnet not in empleado.Dic_empleado:
+                                            print("empleado no aparece en sistema ")
+
+                                        else:
+                                            buscar_empleado.buscar(carnet)
+                                    except ValueError:
+                                        print("Ingrese un carnet válido.")
+
+
+
+                                case 3:
+                                    mostrar_empleado.mostrar_todos()
+                                case 4:
+                                    pass
+                                case 5:
+                                      try:
+                                          carnet = int(input("ingrese carnet de empleadoa eliminar "))
+                                          if carnet not in empleado.Dic_empleado:
+                                             print("empleado no aparece en sistema ")
+
+                                          else:
+                                              eliminar_empleado.eliminar(carnet)
+
+                                      except ValueError:
+                                         print("Ingrese un carnet válido.")
+
+                                case 6:
+                                   print("regresar a menu principal")
+                                case _:
+                                  print("ingrese una opcion valida")
+
+                        except ValueError:
+                             print("ingrese un numero entero")
+
+
                 case 10:
-                    print("salir del proframa ")
+                    print("salir del programa ")
                 case _:
                     print("ingrese una opcion valida")
 
