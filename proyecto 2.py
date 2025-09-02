@@ -1078,8 +1078,7 @@ def main():
                                              correo = input("Ingrese correo: ")
                                              empresa = input("Ingrese empresa: ")
 
-                                             ingreso_prov.ingrese_proveedor(nit, nombre, direccion, telefono, correo,
-                                                                            empresa)
+                                             ingreso_prov.ingrese_proveedor(nit, nombre, direccion, telefono, correo, empresa)
                                          else:
                                              print("El proveedor ya existe en el sistema.")
                                      except ValueError:
@@ -1182,6 +1181,7 @@ def main():
                     mostrar_venta = Mostrar_venta(venta)
                     eliminar_venta = Eliminar_venta(venta)
                     buscar_venta = Buscar_venta(venta)
+                    productos=proveedor_principal()
 
                     while p != 6:
                         menu.menu_venta()
@@ -1198,8 +1198,7 @@ def main():
                                             nit_cliente = int(input("Ingrese NIT del cliente: "))
                                             total = int(input("Ingrese total de la venta: "))
 
-                                            ingreso_venta.ingrese_venta(id_venta, fecha, id_empleado, nit_cliente,
-                                                                        total)
+                                            ingreso_venta.ingrese_venta(id_venta, fecha, id_empleado, nit_cliente, total)
                                         else:
                                             print("La venta ya existe en el sistema.")
                                     except ValueError:
@@ -1239,6 +1238,7 @@ def main():
                     mostrar_deventa = Mostrar_detalleventa(deventa)
                     eliminar_deventa = Eliminar_detalleventa(deventa)
                     buscar_deventa = Buscar_detalleventa(deventa)
+                    productos = Producto()
 
                     while p != 6:
                         menu.menu_detalleventa()
@@ -1252,11 +1252,16 @@ def main():
                                         if id_detalle not in deventa.Dic_detalleventa:
                                             id_venta = int(input("Ingrese ID de la venta: "))
                                             id_producto = int(input("Ingrese ID del producto: "))
-                                            cantidad = int(input("Ingrese cantidad: "))
-                                            precio_unitario = float(input("Ingrese precio unitario: "))
-                                            subtotal = cantidad * precio_unitario
+                                            if id_producto not in productos.Dic_producto:
+                                                print("no esta el producto ingresado")
 
-                                            ingreso_deventa.ingresar( id_detalle, id_venta, id_producto, cantidad, precio_unitario, subtotal)
+                                            else:
+
+                                               cantidad = int(input("Ingrese cantidad: "))
+                                               precio_unitario = float(input("Ingrese precio unitario: "))
+                                               subtotal = cantidad * precio_unitario
+
+                                               ingreso_deventa.ingresar( id_detalle, id_venta, id_producto, cantidad, precio_unitario, subtotal)
                                         else:
                                             print(" El detalle de venta ya existe en el sistema.")
                                     except ValueError:
